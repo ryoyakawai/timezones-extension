@@ -1,7 +1,7 @@
 {
-    "name": "Timezones",
+    "name": "Timezone Clocks",
     "version": "1.0",
-    "description": "Displays Timezones",
+    "description": "Display Multibple Timezone at once",
     "permissions": [
         "*://*/*",
         "tabs"
