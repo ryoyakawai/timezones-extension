@@ -91,7 +91,6 @@ import TimezoneClock from './timezoneclock.js';
             let clockface = document.querySelector('#'+elemId);
             clockface.innerHTML = '';
             time.min = time.min10;
-            console.log(time);
             tzc.drawClock(time, elemId, _CLOCLFACE_WIDTH_/2, 'adjust');
             document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = settings[i].name;
             document.querySelector('#' + _ELEMPRE_ + i + '_date').innerHTML = `${time['hour']}:${time['min']}`;

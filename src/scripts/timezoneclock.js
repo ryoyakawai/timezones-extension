@@ -71,22 +71,42 @@ export default class TimezoneClock {
                     backg: 'rgba(236,239,241,0.2)',
                     hour: 'rgba(66,66,66 ,1)',
                     minute: 'rgba(66,66,66 ,1)',
-                    second: '#ee0000',
-                    pin: '#000000'
+                    second: 'rgba(211,47,47 ,1)',
+                    pin: 'rgba(66,66,66 ,1)'
                 },
                 pm: {
-                    outer: 'rgba(176,190,197 ,1)',//'#444444',
+                    outer: 'rgba(176,190,197 ,1)',
                     backg: 'rgba(207,216,220 ,0.7)',
                     hour: 'rgba(55,71,79 ,1)',
                     minute: 'rgba(55,61,79 ,1)',
-                    second: '#0000ee',
-                    pin: '#0000ee'
+                    second: 'rgba(211,47,47 ,1)',
+                    pin: 'rgba(66,66,66 ,1)'
+                }
+            },
+            adjust: {
+                am: {
+                    outer: 'rgba(224,224,224 ,1)',
+                    backg: 'rgba(236,239,241,0.2)',
+                    //backg: ['rgba(176,190,197 ,1)', 'rgba(227,242,253 ,1)'],
+                    hour: 'rgba(62,39,35 ,1)',
+                    minute: 'rgba(191,54,12 ,1)',
+                    second: 'rgba(255,255,255 ,0)',
+                    pin: 'rgba(191,54,12 ,1)'
+                },
+                pm: {
+                    outer: 'rgba(207,216,220 ,1)',
+                    backg: 'rgba(207,216,220 ,0.7)',
+                    //backg: ['rgba(224,242,241 ,1)', 'rgba(207,216,220 ,1)'],
+                    hour: 'rgba(62,39,35 ,1)',
+                    minute: 'rgba(191,54,12 ,1)',
+                    second: 'rgba(255,255,255 ,0)',
+                    pin: 'rgba(191,54,12 ,1)'
                 }
             },
             icon: {
                 am: {
                     outer: 'rgba(120,144,156 ,1)',
-                    backg: 'rgba(176,190,197 ,1)',
+                    backg: 'rgba(176,190,197 ,0.5)',
                     hour: 'rgba(62,39,35 ,1)',
                     minute: 'rgba(191,54,12 ,1)',
                     second: 'rgba(255,255,255 ,0)',
@@ -94,47 +114,35 @@ export default class TimezoneClock {
                 },
                 pm: {
                     outer: 'rgba(120,144,156 ,1)',
-                    backg: 'rgba(176,190,197 ,1)',
+                    backg: 'rgba(176,190,197, 0.5)',
                     hour: 'rgba(62,39,35 ,1)',
                     minute: 'rgba(191,54,12 ,1)',
                     second: 'rgba(255,255,255 ,0)',
                     pin: 'rgba(255, 255, 255, 0)'
                 }
-            },
-            adjust: {
-                am: {
-                    outer: '#eeeeee',
-                    backg: 'rgba(236,239,241,0.2)',
-                    hour: 'rgba(62,39,35 ,1)',
-                    minute: 'rgba(191,54,12 ,1)',
-                    second: 'rgba(255,255,255 ,0)',
-                    pin: 'rgba(191,54,12 ,1)'
-                },
-                pm: {
-                    outer: 'rgba(176,190,197 ,1)',
-                    backg: 'rgba(207,216,220 ,0.7)',
-                    hour: 'rgba(62,39,35 ,1)',
-                    minute: 'rgba(191,54,12 ,1)',
-                    second: 'rgba(255,255,255 ,0)',
-                    pin: 'rgba(191,54,12 ,1)'
-                }
             }
         };
         let _SIZE_ = size;
         let tw = {};
+		    let hour_sign;
         let clr = colorSet[clock_type][time.ampm];
         let canvas = Raphael(elemId, 2*_SIZE_, 2*_SIZE_);
 		    let clock = canvas.circle(_SIZE_, _SIZE_, _SIZE_-5);
-		    clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
-		    let hour_sign;
+        let backIdx = (time.ampm == 'am') ? parseInt(Math.floor(time.hour / 6)) : parseInt(Math.floor(time.hour / 18));
         switch(clock_type) {
         case 'icon':
         case 'adjust':
             tw = {h: 1.2, m: 2 };
+		        if (typeof clr.backg == 'Object') {
+                clock.attr({ 'fill': clr.backg[backIdx], 'stroke': clr.backg[backIdx], 'stroke-width': '`${_SIZE_/20}`'});
+            } else {
+                clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
+            }
             break;
         case 'default':
         default:
             tw = {h: 1, m: 1};
+		        clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
 		        for(let i=0; i<12; i++){
 				        let start_x = _SIZE_ + Math.round(0.7 * _SIZE_ * Math.cos(30 * i * Math.PI/180));
 				        let start_y = _SIZE_ + Math.round(0.7 * _SIZE_ * Math.sin(30 * i * Math.PI/180));
@@ -158,8 +166,7 @@ export default class TimezoneClock {
 		    second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * _SIZE_}); 
 
 		    let pin = canvas.circle(_SIZE_, _SIZE_, _SIZE_/30/tw.h);
-		    pin.attr({stroke: clr.pin, 'stroke-width': tw * 0.02 * _SIZE_}); 
-		    pin.attr('fill', clr.pin);
+		    pin.attr({'fill':clr.pin, stroke: clr.pin, 'stroke-width': tw * 0.02 * _SIZE_}); 
     }
 
     convSvgImg(targetElem, _ICONSIZE_, callback) {
