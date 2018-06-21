@@ -128,13 +128,13 @@ export default class TimezoneClock {
         let clr = colorSet[clock_type][time.ampm];
         let canvas = Raphael(elemId, 2*_SIZE_, 2*_SIZE_);
 		    let clock = canvas.circle(_SIZE_, _SIZE_, _SIZE_-5);
-        let backIdx = (time.ampm == 'am') ? parseInt(Math.floor(time.hour / 6)) : parseInt(Math.floor(time.hour / 18));
+        let backClrIdx = (time.ampm == 'am') ? parseInt(Math.floor(time.hour / 6)) : parseInt(Math.floor(time.hour / 18));
         switch(clock_type) {
         case 'icon':
         case 'adjust':
             tw = {h: 1.2, m: 2 };
 		        if (typeof clr.backg == 'Object') {
-                clock.attr({ 'fill': clr.backg[backIdx], 'stroke': clr.backg[backIdx], 'stroke-width': '`${_SIZE_/20}`'});
+                clock.attr({ 'fill': clr.backg[backClrIdx], 'stroke': clr.backg[backClrIdx], 'stroke-width': '`${_SIZE_/20}`'});
             } else {
                 clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
             }
