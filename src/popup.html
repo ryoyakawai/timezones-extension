@@ -24,8 +24,39 @@
      .icon {
        display: none;
      }
+     .ctrl-p {
+       display: flex;
+       width: 100%;
+       margin-bottom: 6px;
+     }
+     .wrench-p {
+       width: 20px; height: 20px;
+       padding: 2px;
+       border: 0px solid #eeeeee;
+     }
+     .wrench {
+       cursor: pointer;
+     }
+     .timer-slider-p {
+       display: flex;
+       justify-content: center;
+       height: 20px;
+       padding: 2px;
+       border: 0px solid #eeeeee;
+       margin-left: 2px;
+     }
+     .timer-slider {
+       padding: 2px;
+       cursor: pointer;
+     }
+     .slider-check {
+       margin-left: 5px;
+       margin-top: 5px;
+       cursor: pointer;
+     }
      .clock_container {
        display: flex;
+       justify-content: center;
      }
      .clockface_p {
        text-align: center;
@@ -34,22 +65,28 @@
      .clock_city {
        text-align: center;
      }
-     .clock_text {
+     .clock_date, .clock_time {
        text-align: center;
+     }
+     .clock_date {
+       font-weight: bold;
      }
      .clockface {
-       text-align: center;
-       width: 90px;
-       height: 80px;
-     }
-     .settings {
-       cursor: pointer;
+       display: flex;
+       align-items: center;
+       justify-content: center;
      }
     </style>
   </head>
   <body>
-    <img src="./images/settings.png" width="20px" class="settings">
     <div id="icon" class="icon"></div>
+    <div class="ctrl-p">
+      <div class="wrench-p"><img src="./images/settings.png" width="20" class="wrench" /></div>
+      <div class="timer-slider-p">
+        <input type="range" class="timer-slider" />
+        <input type="checkbox" class="slider-check">
+      </div>
+    </div>
     <div id="clock_container" class="clock_container"></div>
     <script src="./scripts/raphael.min.js"></script>
     <script type="module" src="./scripts/popup.js"></script>

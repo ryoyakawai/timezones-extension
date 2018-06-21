@@ -31,20 +31,20 @@ export default class TimezoneClock {
         this.utc = d.getTime() + (d.getTimezoneOffset() * 60000);
     }
     
-    getCurrentTime(timeDiff) {
+    getCurrentTime(timeZone, zoneOffsetHour) {
         this.updateUTC();
-        return this.getTime(timeDiff);
+        if(typeof timeZone == 'undefined') timeZone = '00:00';
+        let t = timeZone.split(':');
+        let timeZoneFl = parseFloat(t.shift());
+        let sign = timeZoneFl < 0 ? -1 : 1;
+        timeZoneFl = timeZoneFl + sign * parseFloat(t.pop() / 60);
+        
+        return this.getTime({str: timeZone, float: timeZoneFl, zoneOffsetHour: zoneOffsetHour});
     }
 
-    getTime(timeDiff) {
-        if(typeof timeDiff == 'undefined') timeDiff = '00:00';
-        let t = timeDiff.split(':');
-        let timeDiffFl = parseFloat(t.shift());
-        let sign = timeDiffFl < 0 ? -1 : 1;
-        timeDiffFl = timeDiffFl + sign * parseFloat(t.pop() / 60);
-
+    getTime(td) {
         const utc = this.getUTC();
-        let newDT = new Date(utc + (3600000 * timeDiffFl));
+        let newDT = new Date(utc + (3600000 * (td.float + td.zoneOffsetHour)));
         let out = {
             day: newDT.getDay(),
             month: this.getMonthName(newDT.getMonth(), 3),
@@ -53,56 +53,97 @@ export default class TimezoneClock {
             year: newDT.getFullYear(),
             hour: this.zeroPad(newDT.getHours()),
             min: this.zeroPad(newDT.getMinutes()),
+            min10: this.zeroPad(10 * Math.floor(newDT.getMinutes() / 10 )),
             sec: this.zeroPad(newDT.getSeconds()),
-            timeDiff: timeDiff,
+            timeZone: td.str,
+            zoneOffsetHour: td.zoneOffsetHour,
             ampm: newDT.getHours() < 12 ? 'am' : 'pm'
         };
         return out;
     }
 
-    drawClock(time, elemId, size, disp_second_hand) {
+    drawClock(time, elemId, size, clock_type) {
         // https://www.materialui.co/colors
         let colorSet = {
-            am: {
-                outer: '#444444',
-                backg: 'rgba(236,239,241,0.2)',
-                hour: '#444444',
-                minute: '#444444',
-                second: '#ee0000',
-                pin: '#000000'
-            },
-            pm: {
-                outer: '#444444',
-                backg: 'rgba(207,216,220 ,0.7)',
-                hour: '#333333',
-                minute: '#333333',
-                second: '#0000ee',
-                pin: '#0000ee'
+            default: {
+                am: {
+                    outer: 'rgba(189,189,189 ,1)',
+                    backg: 'rgba(236,239,241,0.2)',
+                    hour: 'rgba(66,66,66 ,1)',
+                    minute: 'rgba(66,66,66 ,1)',
+                    second: '#ee0000',
+                    pin: '#000000'
+                },
+                pm: {
+                    outer: 'rgba(176,190,197 ,1)',//'#444444',
+                    backg: 'rgba(207,216,220 ,0.7)',
+                    hour: 'rgba(55,71,79 ,1)',
+                    minute: 'rgba(55,61,79 ,1)',
+                    second: '#0000ee',
+                    pin: '#0000ee'
+                }
             },
             icon: {
-                outer: 'rgba(120,144,156 ,1)',
-                backg: 'rgba(176,190,197 ,1)',
-                hour: 'rgba(62,39,35 ,1)',
-                minute: 'rgba(191,54,12 ,1)',
-                second: '#0000ee',
-                pin: 'rgba(255, 255, 255, 0)'
+                am: {
+                    outer: 'rgba(120,144,156 ,1)',
+                    backg: 'rgba(176,190,197 ,1)',
+                    hour: 'rgba(62,39,35 ,1)',
+                    minute: 'rgba(191,54,12 ,1)',
+                    second: 'rgba(255,255,255 ,0)',
+                    pin: 'rgba(255, 255, 255, 0)'
+                },
+                pm: {
+                    outer: 'rgba(120,144,156 ,1)',
+                    backg: 'rgba(176,190,197 ,1)',
+                    hour: 'rgba(62,39,35 ,1)',
+                    minute: 'rgba(191,54,12 ,1)',
+                    second: 'rgba(255,255,255 ,0)',
+                    pin: 'rgba(255, 255, 255, 0)'
+                }
+            },
+            adjust: {
+                am: {
+                    outer: '#eeeeee',
+                    backg: 'rgba(236,239,241,0.2)',
+                    hour: 'rgba(62,39,35 ,1)',
+                    minute: 'rgba(191,54,12 ,1)',
+                    second: 'rgba(255,255,255 ,0)',
+                    pin: 'rgba(191,54,12 ,1)'
+                },
+                pm: {
+                    outer: 'rgba(176,190,197 ,1)',
+                    backg: 'rgba(207,216,220 ,0.7)',
+                    hour: 'rgba(62,39,35 ,1)',
+                    minute: 'rgba(191,54,12 ,1)',
+                    second: 'rgba(255,255,255 ,0)',
+                    pin: 'rgba(191,54,12 ,1)'
+                }
             }
         };
-        let tw = disp_second_hand !== false ? {h: 1, m: 1} : {h:1.2, m:2};
         let _SIZE_ = size;
-        let clr = disp_second_hand !== false ? colorSet[time.ampm] : colorSet['icon'];
+        let tw = {};
+        let clr = colorSet[clock_type][time.ampm];
         let canvas = Raphael(elemId, 2*_SIZE_, 2*_SIZE_);
 		    let clock = canvas.circle(_SIZE_, _SIZE_, _SIZE_-5);
 		    clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
 		    let hour_sign;
-        if(disp_second_hand !== false) {
+        switch(clock_type) {
+        case 'icon':
+        case 'adjust':
+            tw = {h: 1.2, m: 2 };
+            break;
+        case 'default':
+        default:
+            tw = {h: 1, m: 1};
 		        for(let i=0; i<12; i++){
 				        let start_x = _SIZE_ + Math.round(0.7 * _SIZE_ * Math.cos(30 * i * Math.PI/180));
 				        let start_y = _SIZE_ + Math.round(0.7 * _SIZE_ * Math.sin(30 * i * Math.PI/180));
 				        let end_x = _SIZE_ + Math.round(0.8 * _SIZE_ * Math.cos(30 * i * Math.PI/180));
 				        let end_y = _SIZE_ + Math.round(0.8 * _SIZE_ * Math.sin(30 * i * Math.PI/180));	
 				        hour_sign = canvas.path('M'+start_x+' '+start_y+'L'+end_x+' '+end_y);
+		            hour_sign.attr({ 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
 		        }
+            break;
         }
 		    let hour_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${_SIZE_ / 2 / tw.h}`);
         hour_hand.rotate(30*time.hour+(time.min/2.5), _SIZE_, _SIZE_);
@@ -112,12 +153,12 @@ export default class TimezoneClock {
 		    minute_hand.rotate(6*time.min, _SIZE_, _SIZE_);
 		    minute_hand.attr({stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_});
 
-        if(disp_second_hand!==false) {
-		        let second_hand = canvas.path(`M${_SIZE_} ${_SIZE_+10}L${_SIZE_} ${_SIZE_/3.8}`);
-		        second_hand.rotate(6*time.sec, _SIZE_, _SIZE_);
-		        second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * _SIZE_}); 
-        }
-		    let pin = canvas.circle(_SIZE_, _SIZE_, _SIZE_/20);
+		    let second_hand = canvas.path(`M${_SIZE_} ${_SIZE_+10}L${_SIZE_} ${_SIZE_/3.8}`);
+		    second_hand.rotate(6*time.sec, _SIZE_, _SIZE_);
+		    second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * _SIZE_}); 
+
+		    let pin = canvas.circle(_SIZE_, _SIZE_, _SIZE_/30/tw.h);
+		    pin.attr({stroke: clr.pin, 'stroke-width': tw * 0.02 * _SIZE_}); 
 		    pin.attr('fill', clr.pin);
     }
 
