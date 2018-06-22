@@ -84,9 +84,7 @@ chrome.runtime.onInstalled.addListener(function() {
     }
     
     dispDateTime();
-
     onTick = dispDateTime;
-
     let timerId = setInterval(onTick, 15000);
 
 })();
