@@ -14,6 +14,7 @@
  * limitations under the License.
  **/
 
+import cUtls from './chromeutils.js';
 import TimezoneClock from './timezoneclock.js';
 
 (async function(){
@@ -23,50 +24,25 @@ import TimezoneClock from './timezoneclock.js';
     const tzc = new TimezoneClock();
     const _ICONSIZE_ = 19;
     let onTick = () => {};
-    
-    let settings = [
-        {
-            zone: '+1:00',
-            name: 'London',
-            elemId: null,
-            persistent: false
-        },
-        {
-            zone: '+9:00',
-            name: 'Tokyo',
-            elemId: null,
-            persistent: false
-        },
-        {
-            zone: '-7:00',
-            name: 'San Francisco',
-            elemId: null,
-            persistent: true
-        },
-        {
-            zone: '-4:00',
-            name: 'Boston',
-            elemId: null,
-            persistent: false
-        }
-    ];
+    const cutils = new cUtls();
+    let tzConfig = await cutils.storageGet('tzConfig');
 
-    const dispDateTime = (iconUpdate) => {
-        for(let i in settings) {
-            let zone = settings[i].zone;
-            let elemId = settings[i].elemId;
+    const dispDateTime = async(iconUpdate) => {
+        for(let i in tzConfig) {
+            let zone = tzConfig[i].zone;
+            let elemId = tzConfig[i].elemId;
             let time = tzc.getCurrentTime(zone, 0);
             let tzInfo = tzc.getTimezoneInfoByValue(zone);
             let disp = `${time['year']} ${time['month']} ${time['date']} (${time['day']}) ${time['hour']}:${time['min']}:${time['sec']} ${tzInfo.name.split(' ').pop()} (${time['timeZone']})`;
             let clockface = document.querySelector('#'+elemId);
             clockface.innerHTML = '';
             tzc.drawClock(time, elemId, _CLOCLFACE_WIDTH_/2, 'default');
-            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = settings[i].name;
+            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = tzConfig[i].name;
             document.querySelector('#' + _ELEMPRE_ + i + '_date').innerHTML = `${time['hour']}:${time['min']}`;
             document.querySelector('#' + _ELEMPRE_ + i + '_time').innerHTML = `${time['month']} ${time['date']} (${time['day']})`;
             
-            if((time['min']%30 == 0 && settings[i].persistent === true)
-               || (iconUpdate === true && settings[i].persistent === true) ) {
+            if((time['min']%30 == 0 && tzConfig[i].persistent === true)
+               || (iconUpdate === true && tzConfig[i].persistent === true) ) {
                 tzc.drawClock(time, 'icon', _CLOCLFACE_WIDTH_/2, 'icon');
                 clockface = document.querySelector('#icon');
                 let elem = clockface.getElementsByTagName('svg');
@@ -82,9 +58,9 @@ import TimezoneClock from './timezoneclock.js';
 
     const dispAdjustedDateTime = (min) => {
         let zoneOffsetHour = min / 60;
-        for(let i in settings) {
-            let zone = settings[i].zone;
-            let elemId = settings[i].elemId;
+        for(let i in tzConfig) {
+            let zone = tzConfig[i].zone;
+            let elemId = tzConfig[i].elemId;
             let time = tzc.getCurrentTime(zone, zoneOffsetHour);
             let tzInfo = tzc.getTimezoneInfoByValue(zone);
             let disp = `${time['year']} ${time['month']} ${time['date']} (${time['day']}) ${time['hour']}:${time['min']}:${time['sec']} ${tzInfo.name.split(' ').pop()} (${time['timeZone']})`;
@@ -92,17 +68,17 @@ import TimezoneClock from './timezoneclock.js';
             clockface.innerHTML = '';
             time.min = time.min10;
             tzc.drawClock(time, elemId, _CLOCLFACE_WIDTH_/2, 'adjust');
-            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = settings[i].name;
+            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = tzConfig[i].name;
             document.querySelector('#' + _ELEMPRE_ + i + '_date').innerHTML = `${time['hour']}:${time['min']}`;
             document.querySelector('#' + _ELEMPRE_ + i + '_time').innerHTML = `${time['month']} ${time['date']} (${time['day']})`;
         }
     };
 
     
-    for(let i in settings) {
+    for(let i in tzConfig) {
         // create Element
         let elem = document.createElement('div');
-        settings[i].elemId = elem.id = _ELEMPRE_ + i;
+        tzConfig[i].elemId = elem.id = _ELEMPRE_ + i;
         elem.style.setProperty('width', `${_CLOCLFACE_WIDTH_}px`);
         elem.style.setProperty('height', `${_CLOCLFACE_WIDTH_ + 5}px` );
         elem.classList.add('clockface');
@@ -126,8 +102,8 @@ import TimezoneClock from './timezoneclock.js';
 
         document.querySelector('#clock_container').appendChild(div);
     }
-    let sliderW = settings.length < 3 ? 100 : 110 + (settings.length - 2) * (_CLOCLFACE_WIDTH_ - 5);
-    if(settings.length < 2) document.querySelector('.clock_container').style.setProperty('width', '160px');
+    let sliderW = tzConfig.length < 3 ? 100 : 110 + (tzConfig.length - 2) * (_CLOCLFACE_WIDTH_ - 5);
+    if(tzConfig.length < 2) document.querySelector('.clock_container').style.setProperty('width', '160px');
     let tmC = document.querySelector('.slider-check');
     tmC.setAttribute('checked','checked');
     let tmS = document.querySelector('.timer-slider'); 
