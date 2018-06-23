@@ -5,7 +5,8 @@
     "permissions": [
         "storage",
         "*://*/*",
-        "tabs"
+        "tabs",
+        "idle"
     ],
     "background": {
         "page": "src/background.html",

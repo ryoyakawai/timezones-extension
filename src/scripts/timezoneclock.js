@@ -33,7 +33,7 @@ export default class TimezoneClock {
     
     getCurrentTime(timeZone, zoneOffsetHour) {
         this.updateUTC();
-        if(typeof timeZone == 'undefined') timeZone = '00:00';
+        if(timeZone.match(/\:/)===null) timeZone = '00:00';
         let t = timeZone.split(':');
         let timeZoneFl = parseFloat(t.shift());
         let sign = timeZoneFl < 0 ? -1 : 1;
@@ -46,7 +46,6 @@ export default class TimezoneClock {
         const utc = this.getUTC();
         let newDT = new Date(utc + (3600000 * (td.float + td.zoneOffsetHour)));
         let out = {
-            day: newDT.getDay(),
             month: this.getMonthName(newDT.getMonth(), 3),
             date: newDT.getDate(),
             day: this.getDayName(newDT.getDay(), 3),
@@ -187,10 +186,13 @@ export default class TimezoneClock {
     };
 
     zeroPad(num) {
+        return ('00' + num.toString()).substr(-2);
+/*
         if (num < 10) {
             num = '0' + num.toString();
         }
         return num;
+*/
     }
 
     getTimezoneInfoByValue(timezoneVal) {
