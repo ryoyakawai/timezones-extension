@@ -1,10 +1,9 @@
 {
     "name": "Timezone Clocks",
-    "version": "0.9.1",
+    "version": "1.0.0",
     "description": "Display Multibple Timezone at once",
     "permissions": [
         "storage",
-        "*://*/*",
         "tabs",
         "idle"
     ],
@@ -17,7 +16,7 @@
     ],
     "content_scripts": [
         {
-            "matches": [ "<all_urls>" ],
+            "matches": [ "file:///*/background.html", "file:///*/options.html", "file:///*/popup.html" ],
             "js": ["src/scripts/inject.js"],
             "run_at": "document_start"
         }
@@ -37,6 +36,7 @@
         "48": "src/images/timezoneclock48.png",
         "128": "src/images/timezoneclock128.png"
     },
+    "options_page": "src/options.html",
     "manifest_version": 2
 }
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  **/
-import cUtls from './chromeutils.js';
+import ChromeUtils from './chromeutils.js';
 import TimezoneClock from './timezoneclock.js';
 
 chrome.runtime.onInstalled.addListener(function() {
@@ -21,17 +21,19 @@ chrome.runtime.onInstalled.addListener(function() {
 
 (async () => {
 
+    const cutils = new ChromeUtils();
+    
     updateIconClock();
-    chrome.idle.onStateChanged(function(state) {
+    cutils.setWakeupAction(wakeupAction);
+    function wakeupAction(state) {
         if (state == 'active') {
             updateIconClock();
         }
-    });
+    };
     
     async function updateIconClock() {
         let onTick = () => {};
-        const _ICONSIZE_ = 19;
-        const cutils = new cUtls();
+        const cutils = new ChromeUtils();
 
         async function dispDateTime() {
             let tzConfig = await cutils.storageGet('tzConfig');
@@ -48,46 +50,14 @@ chrome.runtime.onInstalled.addListener(function() {
             tzc.drawClock(time, 'icon', 40, 'icon');
             let clockface = document.querySelector('#icon');
             let elem = clockface.getElementsByTagName('svg');
-            let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, updateIcon);
-            function updateIcon(icon) {
-                chrome.browserAction.setIcon({
-                    imageData : icon
-                });
-            }
+            let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, cutils.updateIcon);
         }
 
         let tzConfiga = await cutils.storageGet('tzConfiga');
+
+        // initialize Data
         if(typeof tzConfiga == 'undefined') {
-            let tzConfig = [
-                {
-                    "zone": "+1:00",
-                    "name": "London",
-                    "elemId": null,
-                    "persistent": false,
-                    "dispicon": false
-                },
-                {
-                    "zone": "+9:00",
-                    "name": "Tokyo",
-                    "elemId": null,
-                    "persistent": false,
-                    "dispicon": false
-                },
-                {
-                    "zone": "-7:00",
-                    "name": "San Francisco",
-                    "elemId": null,
-                    "persistent": true,
-                    "dispicon": true
-                },
-                {
-                    "zone": "-4:00",
-                    "name": "Boston",
-                    "elemId": null,
-                    "persistent": false,
-                    "dispicon": false
-                }
-            ];
+            let tzConfig = [_DEFAULTSETTING_];
             await cutils.storageSet('tzConfig', tzConfig);
         }
         

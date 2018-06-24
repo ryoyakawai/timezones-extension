@@ -29,13 +29,26 @@
        width: 100%;
        margin-bottom: 6px;
      }
-     .wrench-p {
+     .gear-p {
+       display: flex;
+       justify-content: center;
+       align-items: center;
        width: 20px; height: 20px;
        padding: 2px;
-       border: 0px solid #eeeeee;
-     }
-     .wrench {
+       transition: 0.2s;
+       border-radius:20%;
+       background-color: #dfdfdf;
        cursor: pointer;
+     }
+     .gear-p:hover {
+       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+     }
+     .gear-p:active {
+       box-shadow: 0 0px 0px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+     }
+     .gear {
+       cursor: pointer;
+       border-radius:50%;
      }
      .timer-slider-p {
        display: flex;
@@ -82,13 +95,14 @@
   <body>
     <div id="icon" class="icon"></div>
     <div class="ctrl-p">
-      <div class="wrench-p"><img src="./images/settings.png" width="20" class="wrench" /></div>
+      <div id="setting-button" class="gear-p"><img src="./images/menu_down_arrow.png" width="14" height="14" class="gear" /></div>
       <div class="timer-slider-p">
         <input type="range" class="timer-slider" />
         <input type="checkbox" class="slider-check">
       </div>
     </div>
     <div id="clock_container" class="clock_container"></div>
+    <script src="./scripts/config.js"></script>
     <script src="./scripts/raphael.min.js"></script>
     <script type="module" src="./scripts/popup.js"></script>
   </body>

@@ -187,13 +187,12 @@ export default class TimezoneClock {
 
     zeroPad(num) {
         return ('00' + num.toString()).substr(-2);
-/*
-        if (num < 10) {
-            num = '0' + num.toString();
-        }
-        return num;
-*/
     }
+
+    getTimezoneDef() {
+        return tzDef;
+    }
+    
 
     getTimezoneInfoByValue(timezoneVal) {
         let out = tzDef[30];
@@ -205,7 +204,7 @@ export default class TimezoneClock {
         }
         return out;
     }
-    
+
     getMonthName(month, num) {
         const mName = [
             'January', 'February', 'March', 'April', 'May', 'June',

@@ -14,17 +14,14 @@
  * limitations under the License.
  **/
 
-import cUtls from './chromeutils.js';
+import ChromeUtils from './chromeutils.js';
 import TimezoneClock from './timezoneclock.js';
 
 (async function(){
-
     const _ELEMPRE_ = 'clock_';
-    const _CLOCLFACE_WIDTH_ = 80;
     const tzc = new TimezoneClock();
-    const _ICONSIZE_ = 19;
     let onTick = () => {};
-    const cutils = new cUtls();
+    const cutils = new ChromeUtils();
     let tzConfig = await cutils.storageGet('tzConfig');
 
     const dispDateTime = async(iconUpdate) => {
@@ -46,14 +43,15 @@ import TimezoneClock from './timezoneclock.js';
                 tzc.drawClock(time, 'icon', _CLOCLFACE_WIDTH_/2, 'icon');
                 clockface = document.querySelector('#icon');
                 let elem = clockface.getElementsByTagName('svg');
-                let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, () => {});
-                function updateIcon(icon) {
-                    chrome.browserAction.setIcon({
-                        imageData : icon
-                    });
-                }
+                let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, cutils.updateIcon);
             }
         }
+    };
+
+    const updateSetting = event => {
+        event.stopPropagation();
+        event.preventDefault();
+        cutils.opentab('src/options.html');
     };
 
     const dispAdjustedDateTime = (min) => {
@@ -74,7 +72,6 @@ import TimezoneClock from './timezoneclock.js';
         }
     };
 
-    
     for(let i in tzConfig) {
         // create Element
         let elem = document.createElement('div');
@@ -102,6 +99,9 @@ import TimezoneClock from './timezoneclock.js';
 
         document.querySelector('#clock_container').appendChild(div);
     }
+    let settingB = document.querySelector('#setting-button');
+    settingB.addEventListener('mousedown', updateSetting);
+    
     let sliderW = tzConfig.length < 3 ? 100 : 110 + (tzConfig.length - 2) * (_CLOCLFACE_WIDTH_ - 5);
     if(tzConfig.length < 2) document.querySelector('.clock_container').style.setProperty('width', '160px');
     let tmC = document.querySelector('.slider-check');

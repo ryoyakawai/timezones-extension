@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+     body {
+       margin : 10px;
+     }
+     .icon {
+      display: none;
+     }
+     .add {
+       width: 24px;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 10px 20px;
+       border: 1px solid #dddddd;
+       padding:5px;
+       border-radius: 10px;
+       transition: 0.2s;
+       cursor: pointer;
+     }
+     .add:hover {
+       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+     }
+     .add:active {
+       box-shadow: 0 0px 0px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+     }
+     .main-p {
+       display:inline-block;
+       width: 640px;
+     }
+     .timezone-container {
+       display:inline-block;
+       margin: 10px 20px;
+       padding: 5px;
+       border-radius: 5px;
+       box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+     }
+     .innerItem {
+       margin: -13px 25px 10px 25px
+     }
+     .remove-icon-p {
+       text-align: right;
+       margin: 3px;
+       cursor: pointer;
+     }
+     .remove-image {
+       padding:0; margin:0;
+       border-radius: 50%;
+       transition: 0.2s;
+     }
+     .remove-image:hover {
+       box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+     }
+     .remove-image:active {
+       box-shadow: 0 0px 0px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+     }
+     .setting-item {
+       margin: 0px 0px 10px 0px;
+     }
+     .update-label {
+       margin-left: 10px
+     }
+     .change-order {
+       margin: 0px 5px;
+       cursor: pointer;
+     }
+     .message {
+       display:inline-block;
+       height: 10px;
+       margin-left: 35px;
+       color: rgba(0, 0, 0, 0);
+     }
+     .message-info {
+       height: 10px;
+       color: #0000cc;
+       font-weight: bold;
+       animation-name: removemessage;
+       animation-duration: 3s;
+       animation-timing-function: ease-in-out;
+     }
+     .message-warning {
+       height: 10px;
+       color: #cc0000;
+       font-weight: bold;
+       animation-name: removemessage;
+       animation-duration: 3s;
+       animation-timing-function: ease-in-out;
+     }
+     @keyframes removemessage {
+       from {opacity: 1;}
+       to {opacity: 0;}
+     }
+     
+    </style>
+  </head>
+  <body>
+    <div id="icon" class="icon"></div>
+    <div id="add-p" class="add-p">
+      <div id="add" class="add">
+        <img src="./images/add.png" width="20" height="20">
+      </div>
+      <dvi id="message" class="message"></div>
+    </div>
+    <div id="main" class="main-p"></div>
+    <script src="./scripts/config.js"></script>
+    <script src="./scripts/raphael.min.js"></script>
+    <script type="module" src="./scripts/options.js"></script>
+  </body>
+</html>
