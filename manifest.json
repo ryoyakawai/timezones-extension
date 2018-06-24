@@ -9,7 +9,7 @@
     ],
     "background": {
         "page": "src/background.html",
-        "persistent": false
+        "persistent": true
     },
     "web_accessible_resources": [
         "src/scripts/*"
