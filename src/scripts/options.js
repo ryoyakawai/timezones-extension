@@ -79,7 +79,7 @@ import TimezoneClock from './timezoneclock.js';
         
         await cutils.storageSet('tzConfig', tzConfig);
         document.querySelector('#main').innerHTML='';
-        createSettingItems();
+        createSettingItems({idx: idx-1, type:'order-up'});
     }
 
     async function clockOrderDown(event) {
@@ -92,7 +92,7 @@ import TimezoneClock from './timezoneclock.js';
         
         await cutils.storageSet('tzConfig', tzConfig);
         document.querySelector('#main').innerHTML='';
-        createSettingItems();
+        createSettingItems({idx: idx+1, type:'order-down'});
     }
 
 
@@ -123,7 +123,7 @@ import TimezoneClock from './timezoneclock.js';
             await cutils.storageSet('tzConfig', tzConfig);
             checkDispIconIsChecked();
             document.querySelector('#main').innerHTML='';
-            createSettingItems();
+            createSettingItems({idx: 0, type :'addNew'});
         } else {
             let elem = document.querySelector('#message');
             elem.innerHTML = 'No more clocks is able to add.';
@@ -146,7 +146,7 @@ import TimezoneClock from './timezoneclock.js';
             await cutils.storageSet('tzConfig', tzConfig);
             checkDispIconIsChecked();
             document.querySelector('#main').innerHTML='';
-            createSettingItems();
+            createSettingItems({idx: idx, type:'remove'});
         } else {
             let elem = document.querySelector('#message');
             elem.innerHTML = 'At least one clock is required.';
@@ -283,8 +283,8 @@ import TimezoneClock from './timezoneclock.js';
         innerItems.classList.add('innerItem');
 
         clockorder.appendChild(span03);
-        clockorder.appendChild(order_up);
         clockorder.appendChild(order_down);
+        clockorder.appendChild(order_up);
         remove.appendChild(img00);
         
         dispasicon.appendChild(span02);
@@ -307,11 +307,43 @@ import TimezoneClock from './timezoneclock.js';
         return div00;
     };
 
-    async function createSettingItems() {
+    async function createSettingItems(item) {
         let main = document.querySelector('#main');
         for(let idx in tzConfig) {
             let elem = createEditBLock(idx, tzConfig[idx]);
             main.appendChild(elem);
+        }
+        
+        if(typeof item == 'object' && parseInt(item.idx) < tzConfig.length) {
+            let idx = item.idx = parseInt(item.idx);
+            switch(item.type) {
+            case 'remove':
+                console.log('remove');
+                let nextElem = document.querySelector(`#timezone_${idx}`);
+                let dummyBlock = document.createElement('div');
+                dummyBlock.id = 'dummy-inner-container';
+                dummyBlock.classList.add('timezone-container', 'dummy-inner-container');
+                dummyBlock.innerHTML = nextElem.innerHTML;
+                nextElem.parentNode.insertBefore(dummyBlock, nextElem);
+                setTimeout(() => {
+                    dummyBlock.style.setProperty('opacity', '0');
+                }, 10);
+                setTimeout(() => {
+                    let re = document.querySelector('#dummy-inner-container');
+                    re.parentNode.removeChild(re);
+                }, 500);
+                break;
+            case 'addNew':
+            case 'order-down':
+            case 'order-up':
+                let moveElem = document.querySelector(`#timezone_${idx}`);
+                moveElem.style.setProperty('opacity', '0');
+                setTimeout(() => {
+                    moveElem.style.setProperty('opacity', '1');
+                }, 10);
+                break;
+            }
+            checkDispIconIsChecked();
         }
     }
 
