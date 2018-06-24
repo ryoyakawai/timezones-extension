@@ -44,6 +44,8 @@ import TimezoneClock from './timezoneclock.js';
                 clockface = document.querySelector('#icon');
                 let elem = clockface.getElementsByTagName('svg');
                 let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, cutils.updateIcon);
+                let titleText = `${time.hour}:${time.min}`;
+                cutils.updateTitle(titleText);
             }
         }
     };

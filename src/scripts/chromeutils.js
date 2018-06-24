@@ -53,6 +53,14 @@ export default class ChromeUtils {
         });
     }
 
+    updateBadgeText(text) {
+        chrome.browserAction.setBadgeText({text: text});
+    }
+
+    updateTitle(text) {
+        chrome.browserAction.setTitle({title: text});
+    }
+
     opentab(path) {
         chrome.tabs.create({ url: path });
     }
