@@ -62,6 +62,7 @@ export default class TimezoneClock {
     }
 
     drawClock(time, elemId, size, clock_type) {
+        // http://www.emanueleferonato.com/2010/12/11/javascript-analog-clock-with-no-images-and-no-css/
         // https://www.materialui.co/colors
         let colorSet = {
             default: {
@@ -71,7 +72,7 @@ export default class TimezoneClock {
                     hour: 'rgba(66,66,66 ,1)',
                     minute: 'rgba(66,66,66 ,1)',
                     second: 'rgba(211,47,47 ,1)',
-                    pin: 'rgba(66,66,66 ,1)'
+                    pin: 'rgba(211,47,47 ,1)'
                 },
                 pm: {
                     outer: 'rgba(176,190,197 ,1)',
@@ -79,7 +80,7 @@ export default class TimezoneClock {
                     hour: 'rgba(55,71,79 ,1)',
                     minute: 'rgba(55,61,79 ,1)',
                     second: 'rgba(211,47,47 ,1)',
-                    pin: 'rgba(66,66,66 ,1)'
+                    pin: 'rgba(211,47,47 ,1)'
                 }
             },
             adjust: {
@@ -90,7 +91,7 @@ export default class TimezoneClock {
                     hour: 'rgba(62,39,35 ,1)',
                     minute: 'rgba(191,54,12 ,1)',
                     second: 'rgba(255,255,255 ,0)',
-                    pin: 'rgba(191,54,12 ,1)'
+                    pin: 'rgba(255,255,255 ,0)'
                 },
                 pm: {
                     outer: 'rgba(207,216,220 ,1)',
@@ -99,7 +100,7 @@ export default class TimezoneClock {
                     hour: 'rgba(62,39,35 ,1)',
                     minute: 'rgba(191,54,12 ,1)',
                     second: 'rgba(255,255,255 ,0)',
-                    pin: 'rgba(191,54,12 ,1)'
+                    pin: 'rgba(255,255,255 ,0)'
                 }
             },
             icon: {
@@ -152,20 +153,28 @@ export default class TimezoneClock {
 		        }
             break;
         }
-		    let hour_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${_SIZE_ / 2 / tw.h}`);
+        let hour_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${_SIZE_ / 2 / tw.h }`);
         hour_hand.rotate(30*time.hour+(time.min/2.5), _SIZE_, _SIZE_);
-		    hour_hand.attr({stroke: clr.hour, 'stroke-width': tw.h * 0.07 * _SIZE_});
+        hour_hand.attr({stroke: clr.hour, 'stroke-width': `${tw.h * 0.07 * _SIZE_}`});
 
-		    let minute_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${0.36 * _SIZE_ / tw.m}`);
-		    minute_hand.rotate(6*time.min, _SIZE_, _SIZE_);
-		    minute_hand.attr({stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_});
+        let hour_pin = canvas.circle(_SIZE_, _SIZE_ / 2 / tw.h, tw.h * 0.07 * _SIZE_ / 4);
+        hour_pin.rotate(30*time.hour+(time.min/2.5), _SIZE_, _SIZE_);
+        hour_pin.attr({'fill':clr.hour, stroke: clr.hour, 'stroke-width': tw.h * 0.07 * _SIZE_ / 4}); 
 
-		    let second_hand = canvas.path(`M${_SIZE_} ${_SIZE_+10}L${_SIZE_} ${_SIZE_/3.8}`);
-		    second_hand.rotate(6*time.sec, _SIZE_, _SIZE_);
-		    second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * _SIZE_}); 
+        let minute_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${0.36 * _SIZE_ / tw.m}`);
+        minute_hand.rotate(6*time.min, _SIZE_, _SIZE_);
+        minute_hand.attr({stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_});
 
-		    let pin = canvas.circle(_SIZE_, _SIZE_, _SIZE_/30/tw.h);
-		    pin.attr({'fill':clr.pin, stroke: clr.pin, 'stroke-width': tw * 0.02 * _SIZE_}); 
+        let minute_pin = canvas.circle(_SIZE_, 0.36 * _SIZE_ / tw.m, tw.m * 0.04 * _SIZE_ / 4);
+        minute_pin.rotate(6*time.min, _SIZE_, _SIZE_);
+        minute_pin.attr({'fill':clr.minute, stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_ / 4}); 
+
+        let second_hand = canvas.path(`M${_SIZE_} ${_SIZE_+7}L${_SIZE_} ${_SIZE_/3.8}`);
+        second_hand.rotate(6*time.sec, _SIZE_, _SIZE_);
+        second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * _SIZE_}); 
+
+        let pin = canvas.circle(_SIZE_, _SIZE_, tw.h * 0.07 * _SIZE_ / 3);
+        pin.attr({'fill':clr.second, stroke: clr.second, 'stroke-width': tw.h * 0.07 * _SIZE_ / 3}); 
     }
 
     convSvgImg(targetElem, _ICONSIZE_, callback) {
