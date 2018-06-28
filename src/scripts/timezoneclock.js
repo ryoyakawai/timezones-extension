@@ -91,7 +91,7 @@ export default class TimezoneClock {
                     hour: 'rgba(62,39,35 ,1)',
                     minute: 'rgba(191,54,12 ,1)',
                     second: 'rgba(255,255,255 ,0)',
-                    pin: 'rgba(255,255,255 ,0)'
+                    pin: 'rgba(211,47,47 ,1)'
                 },
                 pm: {
                     outer: 'rgba(207,216,220 ,1)',
@@ -100,7 +100,7 @@ export default class TimezoneClock {
                     hour: 'rgba(62,39,35 ,1)',
                     minute: 'rgba(191,54,12 ,1)',
                     second: 'rgba(255,255,255 ,0)',
-                    pin: 'rgba(255,255,255 ,0)'
+                    pin: 'rgba(211,47,47 ,1)'
                 }
             },
             icon: {
@@ -132,7 +132,7 @@ export default class TimezoneClock {
         switch(clock_type) {
         case 'icon':
         case 'adjust':
-            tw = {h: 1.2, m: 2 };
+            tw = {h: 1.2, m: 1.6 };
 		        if (typeof clr.backg == 'Object') {
                 clock.attr({ 'fill': clr.backg[backClrIdx], 'stroke': clr.backg[backClrIdx], 'stroke-width': '`${_SIZE_/20}`'});
             } else {
@@ -161,11 +161,11 @@ export default class TimezoneClock {
         hour_pin.rotate(30*time.hour+(time.min/2.5), _SIZE_, _SIZE_);
         hour_pin.attr({'fill':clr.hour, stroke: clr.hour, 'stroke-width': tw.h * 0.07 * _SIZE_ / 4}); 
 
-        let minute_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${0.36 * _SIZE_ / tw.m}`);
+        let minute_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${0.30 * _SIZE_ / tw.m}`);
         minute_hand.rotate(6*time.min, _SIZE_, _SIZE_);
         minute_hand.attr({stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_});
 
-        let minute_pin = canvas.circle(_SIZE_, 0.36 * _SIZE_ / tw.m, tw.m * 0.04 * _SIZE_ / 4);
+        let minute_pin = canvas.circle(_SIZE_, 0.30 * _SIZE_ / tw.m, tw.m * 0.04 * _SIZE_ / 4);
         minute_pin.rotate(6*time.min, _SIZE_, _SIZE_);
         minute_pin.attr({'fill':clr.minute, stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_ / 4}); 
 
@@ -174,7 +174,7 @@ export default class TimezoneClock {
         second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * _SIZE_}); 
 
         let pin = canvas.circle(_SIZE_, _SIZE_, tw.h * 0.07 * _SIZE_ / 3);
-        pin.attr({'fill':clr.second, stroke: clr.second, 'stroke-width': tw.h * 0.07 * _SIZE_ / 3}); 
+        pin.attr({'fill':clr.pin, stroke: clr.pin, 'stroke-width': tw.h * 0.07 * _SIZE_ / 3}); 
     }
 
     convSvgImg(targetElem, _ICONSIZE_, callback) {
