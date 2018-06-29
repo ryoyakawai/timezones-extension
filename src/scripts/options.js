@@ -270,13 +270,13 @@ import TimezoneClock from './timezoneclock.js';
         let remove = document.createElement('div');
         remove.id = `remove-icon-p_${idx}`;
         remove.classList.add('remove-icon-p');
-        remove.addEventListener('mousedown', removeTimezoneClock, false);
         
         let img00 = document.createElement('img');
         img00.id = `remove-icon_${idx}`;
         img00.src = 'images/remove.png';
         img00.width = img00.height = '20';
         img00.classList.add('remove-image');
+        img00.addEventListener('mousedown', removeTimezoneClock, false);
 
         let innerItems = document.createElement('div');
         innerItems.id = 'innetItem';
