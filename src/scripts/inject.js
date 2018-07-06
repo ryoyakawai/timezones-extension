@@ -1,7 +1,7 @@
 (() => {
     let injectFiles = [
-        { type: 'moule', path: 'scripts/chromeutils.js' },
-        { type: 'moule', path: 'scripts/timezonedef.js' },
+        { type: 'module', path: 'scripts/chromeutils.js' },
+        { type: 'module', path: 'scripts/timezonedef.js' },
         { type: 'module', path: 'scripts/timezoneclock.js' }
     ];
 
