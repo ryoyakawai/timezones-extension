@@ -18,10 +18,11 @@ import ChromeUtils from './chromeutils.js';
 import TimezoneClock from './timezoneclock.js';
 
 (async function(){
+    const _STORAGE_NAME_ = 'tzConfig';
     const tzc = new TimezoneClock();
     const cutils = new ChromeUtils();
     const timezones = tzc.getTimezoneDef();
-    let tzConfig = await cutils.storageGet('tzConfig');
+    let tzConfig = await cutils.storageGet(_STORAGE_NAME_);
 
     async function storeOnInput(event){
         const idx = parseInt(event.target.id.split('_').pop());
@@ -38,7 +39,7 @@ import TimezoneClock from './timezoneclock.js';
             break;
         }
         
-        await cutils.storageSet('tzConfig', tzConfig);
+        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
     };
 
     async function insertTimezoneName(event) {
@@ -49,7 +50,7 @@ import TimezoneClock from './timezoneclock.js';
         tzConfig[idx].name = name;
         document.querySelector(`#clockname-text_${idx}`).value = name;
 
-        await cutils.storageSet('tzConfig', tzConfig);
+        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
     }
 
     async function updateDispIconSetting(event) {
@@ -65,7 +66,7 @@ import TimezoneClock from './timezoneclock.js';
 
         }
         updateDispIcon(tzConfig[idx].zone);
-        await cutils.storageSet('tzConfig', tzConfig);
+        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
     }
 
 
@@ -77,7 +78,7 @@ import TimezoneClock from './timezoneclock.js';
         tzConfig.splice(idx, 1);
         tzConfig.splice(idx-1, 0, item);
         
-        await cutils.storageSet('tzConfig', tzConfig);
+        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
         document.querySelector('#main').innerHTML='';
         createSettingItems({idx: idx-1, type:'order-up'});
     }
@@ -90,7 +91,7 @@ import TimezoneClock from './timezoneclock.js';
         tzConfig.splice(idx, 1);
         tzConfig.splice(idx+1, 0, item);
         
-        await cutils.storageSet('tzConfig', tzConfig);
+        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
         document.querySelector('#main').innerHTML='';
         createSettingItems({idx: idx+1, type:'order-down'});
     }
@@ -120,7 +121,7 @@ import TimezoneClock from './timezoneclock.js';
             };
             
             tzConfig.unshift(default_data);
-            await cutils.storageSet('tzConfig', tzConfig);
+            await cutils.storageSet(_STORAGE_NAME_, tzConfig);
             checkDispIconIsChecked();
             document.querySelector('#main').innerHTML='';
             createSettingItems({idx: 0, type :'addNew'});
@@ -143,7 +144,7 @@ import TimezoneClock from './timezoneclock.js';
 
             tzConfig.splice(idx, 1);
             
-            await cutils.storageSet('tzConfig', tzConfig);
+            await cutils.storageSet(_STORAGE_NAME_, tzConfig);
             checkDispIconIsChecked();
             document.querySelector('#main').innerHTML='';
             createSettingItems({idx: idx, type:'remove'});
@@ -169,7 +170,7 @@ import TimezoneClock from './timezoneclock.js';
         }
         if(count == 0) {
             tzConfig[0].dispicon = true;
-            await cutils.storageSet('tzConfig', tzConfig);
+            await cutils.storageSet(_STORAGE_NAME_, tzConfig);
             updateDispIcon(tzConfig[0].zone);
             
             let elem = document.querySelector('#message');
