@@ -27,8 +27,8 @@
        box-shadow: 0 0px 0px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
      }
      .main-p {
-       display:inline-block;
-       width: 640px;
+       display: inline-block;
+       width: 400px;
      }
      .timezone-container {
        display:inline-block;
@@ -71,6 +71,12 @@
        margin: 0px 5px;
        cursor: pointer;
      }
+     .message-area {
+       width:400px;
+       display: flex;
+       justify-content: flex-end;
+       margin: 10px;
+     }
      .message {
        display:inline-block;
        height: 10px;
@@ -97,18 +103,25 @@
        from {opacity: 1;}
        to {opacity: 0;}
      }
-     
+     #main-container {
+       display:flex;
+       justify-content: flex-end;
+     }
     </style>
   </head>
   <body>
-    <div id="icon" class="icon"></div>
-    <div id="add-p" class="add-p">
-      <div id="add" class="add">
-        <img src="./images/add.png" width="20" height="20">
-      </div>
-      <dvi id="message" class="message"></div>
+    <div class="message-area">
+      <div id="message" class="message"></div>
     </div>
-    <div id="main" class="main-p"></div>
+    <div id="main-container">
+      <div id="icon" class="icon"></div>
+      <div id="add-p" class="add-p">
+        <div id="add" class="add">
+          <img src="./images/add.png" width="20" height="20"/>
+        </div>
+      </div>
+      <div id="main" class="main-p"></div>
+    </div>
     <script src="./scripts/config.js"></script>
     <script src="./scripts/raphael.min.js"></script>
     <script type="module" src="./scripts/options.js"></script>
