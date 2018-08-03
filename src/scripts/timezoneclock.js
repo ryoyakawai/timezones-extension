@@ -15,6 +15,7 @@
  **/
 
 import tzDef from './timezonedef.js';
+import config from './config.js';
 
 export default class TimezoneClock {
     constructor() {
@@ -32,7 +33,7 @@ export default class TimezoneClock {
     }
     
     getCurrentTime(timeZone, zoneOffsetHour) {
-        this.updateUTC();
+      this.updateUTC();
         if(timeZone.match(/\:/)===null) timeZone = '00:00';
         let t = timeZone.split(':');
         let timeZoneFl = parseFloat(t.shift());
@@ -177,7 +178,7 @@ export default class TimezoneClock {
         pin.attr({'fill':clr.pin, stroke: clr.pin, 'stroke-width': tw.h * 0.07 * _SIZE_ / 3}); 
     }
 
-    convSvgImg(targetElem, _ICONSIZE_, callback) {
+    convSvgImg(targetElem, iconsize, callback) {
         let svg = targetElem;
         let svgData = new XMLSerializer().serializeToString(svg);
         let canvas = document.createElement('canvas');
@@ -187,8 +188,8 @@ export default class TimezoneClock {
         let ctx = canvas.getContext('2d');
         let image = new Image;
         image.onload = () => {
-            ctx.drawImage( image, 0, 0, canvas.width, canvas.height, 0, 0, _ICONSIZE_ + 2, _ICONSIZE_ + 2 );
-            let out = ctx.getImageData(1, 1, _ICONSIZE_ , _ICONSIZE_);
+            ctx.drawImage( image, 0, 0, canvas.width, canvas.height, 0, 0, iconsize + 2, iconsize + 2 );
+            let out = ctx.getImageData(1, 1, iconsize , iconsize);
             callback(out); // update tabIcon
         };
         image.src = "data:image/svg+xml;charset=utf-8;base64," + btoa(unescape(encodeURIComponent(svgData)));

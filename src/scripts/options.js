@@ -16,18 +16,18 @@
 
 import ChromeUtils from './chromeutils.js';
 import TimezoneClock from './timezoneclock.js';
+import config from './config.js';
 
 (async function(){
-    const _STORAGE_NAME_ = 'tzConfig';
     const tzc = new TimezoneClock();
     const cutils = new ChromeUtils();
     const timezones = tzc.getTimezoneDef();
-    let tzConfig = await cutils.storageGet(_STORAGE_NAME_);
+    let tzConfig = await cutils.storageGet(config.storage_name);
 
     async function storeOnInput(event){
+        tzConfig = await cutils.storageGet(config.storage_name);
         const idx = parseInt(event.target.id.split('_').pop());
         const label = event.target.id.split('_').shift();
-
         switch(label) {
         case 'clockname-text':
             tzConfig[idx].name = event.target.value;
@@ -39,21 +39,23 @@ import TimezoneClock from './timezoneclock.js';
             break;
         }
         
-        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+        await cutils.storageSet(config.storage_name, tzConfig);
     };
 
     async function insertTimezoneName(event) {
-        const idx = parseInt(event.target.id.split('_').pop());
+      let tzConfig = await cutils.storageGet(config.storage_name);
+      const idx = parseInt(event.target.id.split('_').pop());
         const label = event.target.id.split('_').shift();
 
         let name = (tzConfig[idx].zoneLabel.split('/').shift()).trim();
         tzConfig[idx].name = name;
         document.querySelector(`#clockname-text_${idx}`).value = name;
 
-        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+        await cutils.storageSet(config.storage_name, tzConfig);
     }
 
     async function updateDispIconSetting(event) {
+        let tzConfig = await cutils.storageGet(config.storage_name);
         const idx = event.target.id.split('_').pop();
         const label = event.target.id.split('_').shift();
 
@@ -66,11 +68,12 @@ import TimezoneClock from './timezoneclock.js';
 
         }
         updateDispIcon(tzConfig[idx].zone);
-        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+        await cutils.storageSet(config.storage_name, tzConfig);
     }
 
 
     async function clockOrderUp(event) {
+        let tzConfig = await cutils.storageGet(config.storage_name);
         const idx = parseInt(event.target.id.split('_').pop());
         const label = event.target.id.split('_').shift();
 
@@ -78,12 +81,13 @@ import TimezoneClock from './timezoneclock.js';
         tzConfig.splice(idx, 1);
         tzConfig.splice(idx-1, 0, item);
         
-        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+        await cutils.storageSet(config.storage_name, tzConfig);
         document.querySelector('#main').innerHTML='';
         createSettingItems({idx: idx-1, type:'order-up'});
     }
 
-    async function clockOrderDown(event) {
+  async function clockOrderDown(event) {
+        let tzConfig = await cutils.storageGet(config.storage_name);
         const idx = parseInt(event.target.id.split('_').pop());
         const label = event.target.id.split('_').shift();
         
@@ -91,7 +95,7 @@ import TimezoneClock from './timezoneclock.js';
         tzConfig.splice(idx, 1);
         tzConfig.splice(idx+1, 0, item);
         
-        await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+        await cutils.storageSet(config.storage_name, tzConfig);
         document.querySelector('#main').innerHTML='';
         createSettingItems({idx: idx+1, type:'order-down'});
     }
@@ -104,24 +108,18 @@ import TimezoneClock from './timezoneclock.js';
         tzc.drawClock(time, 'icon', 40, 'icon');
         let clockface = document.querySelector('#icon');
         let elem = clockface.getElementsByTagName('svg');
-        let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, cutils.updateIcon);
+        let icon = tzc.convSvgImg(elem[0], config.iconsize, cutils.updateIcon);
     }
 
     async function addNewTimezoneClock() {
-        if(tzConfig.length < _CLOCKMAX_) { 
-            // something weried things happening...
-            // const _DEFAULTSETTING_ is replace with other values...
-            let default_data =  {
-                "zone": "+1:00",
-                "name": "London",
-                "elemId": null,
-                "persistent": false,
-                zoneLabel:"London / +1:00",
-                "dispicon": true
-            };
-            
+        let tzConfig = await cutils.storageGet(config.storage_name);
+        if(tzConfig.length < config.clockmax) {
+
+            let default_data =  config.defaultsetting;
+
             tzConfig.unshift(default_data);
-            await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+
+            await cutils.storageSet(config.storage_name, tzConfig);
             checkDispIconIsChecked();
             document.querySelector('#main').innerHTML='';
             createSettingItems({idx: 0, type :'addNew'});
@@ -138,13 +136,14 @@ import TimezoneClock from './timezoneclock.js';
     }
 
     async function removeTimezoneClock(event) {
+        let tzConfig = await cutils.storageGet(config.storage_name);
         if(tzConfig.length > 1) { 
             const idx = parseInt(event.target.id.split('_').pop());
             const label = event.target.id.split('_').shift();
 
             tzConfig.splice(idx, 1);
             
-            await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+            await cutils.storageSet(config.storage_name, tzConfig);
             checkDispIconIsChecked();
             document.querySelector('#main').innerHTML='';
             createSettingItems({idx: idx, type:'remove'});
@@ -161,6 +160,7 @@ import TimezoneClock from './timezoneclock.js';
     }
 
     async function checkDispIconIsChecked() {
+        let tzConfig = await cutils.storageGet(config.storage_name);
         let count = 0;
         for(let i=0; i<tzConfig.length; i++) {
             if(tzConfig[i].dispicon === true) {
@@ -170,7 +170,7 @@ import TimezoneClock from './timezoneclock.js';
         }
         if(count == 0) {
             tzConfig[0].dispicon = true;
-            await cutils.storageSet(_STORAGE_NAME_, tzConfig);
+            await cutils.storageSet(config.storage_name, tzConfig);
             updateDispIcon(tzConfig[0].zone);
             
             let elem = document.querySelector('#message');
@@ -185,7 +185,9 @@ import TimezoneClock from './timezoneclock.js';
         
     }
 
-    const createEditBLock = (idx, config) => {
+    const createEditBLock = async (idx, tzConfig) => {
+        //let tzConfig = await cutils.storageGet(config.storage_name);
+ 
         let div00 = document.createElement('div');
         div00.id = `timezone_${idx}`;
         div00.classList.add('timezone-container');
@@ -206,7 +208,7 @@ import TimezoneClock from './timezoneclock.js';
         let input00 = document.createElement('input');
         input00.id = `clockname-text_${idx}`;
         input00.type = 'text';
-        input00.value = config.name;
+        input00.value = tzConfig[idx].name;
         input00.addEventListener('input', storeOnInput, false);
         
         let span01 = document.createElement('span');
@@ -224,7 +226,7 @@ import TimezoneClock from './timezoneclock.js';
         select00.appendChild(option);
         for(let i=0; i<timezones.length; i++) {
             let selected = false;
-            if(config.zoneLabel == timezones[i].name) {
+            if(tzConfig[idx].zoneLabel == timezones[i].name) {
                 selected = true;
             }
             let option = new Option(timezones[i].name, i, false, selected);
@@ -241,10 +243,10 @@ import TimezoneClock from './timezoneclock.js';
         let input01 = document.createElement('input');
         input01.type = 'radio';
         input01.name = 'displayasicon';
-        input01.value = config.name;
+        input01.value = tzConfig[idx].name;
         input01.addEventListener('input', storeOnInput, false);
         input01.id = `display-as-icon_${idx}`;
-        if(config.dispicon === true) {
+        if(tzConfig[idx].dispicon === true) {
             input01.setAttribute('checked', 'checked');
         }
         input01.addEventListener('input', updateDispIconSetting, false);
@@ -309,9 +311,11 @@ import TimezoneClock from './timezoneclock.js';
     };
 
     async function createSettingItems(item) {
+        let tzConfig = await cutils.storageGet(config.storage_name);
         let main = document.querySelector('#main');
         for(let idx in tzConfig) {
-            let elem = createEditBLock(idx, tzConfig[idx]);
+            let elem = await createEditBLock(idx, tzConfig);
+          //console.log(main, elem);
             main.appendChild(elem);
         }
         
@@ -319,7 +323,6 @@ import TimezoneClock from './timezoneclock.js';
             let idx = item.idx = parseInt(item.idx);
             switch(item.type) {
             case 'remove':
-                console.log('remove');
                 let nextElem = document.querySelector(`#timezone_${idx}`);
                 let dummyBlock = document.createElement('div');
                 dummyBlock.id = 'dummy-inner-container';

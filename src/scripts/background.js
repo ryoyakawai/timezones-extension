@@ -15,12 +15,12 @@
  **/
 import ChromeUtils from './chromeutils.js';
 import TimezoneClock from './timezoneclock.js';
+import config from './config.js';
 
 chrome.runtime.onInstalled.addListener(function() {
 });
 
 (async () => {
-
     const cutils = new ChromeUtils();
     
     updateIconClock();
@@ -36,7 +36,7 @@ chrome.runtime.onInstalled.addListener(function() {
         const cutils = new ChromeUtils();
 
         async function dispDateTime() {
-            let tzConfig = await cutils.storageGet('tzConfig');
+            let tzConfig = await cutils.storageGet(config.storage_name);
             let zone = tzConfig[0].zone;
             for(let idx in tzConfig) {
                 if(tzConfig[idx].dispicon === true) {
@@ -50,17 +50,18 @@ chrome.runtime.onInstalled.addListener(function() {
             tzc.drawClock(time, 'icon', 40, 'icon');
             let clockface = document.querySelector('#icon');
             let elem = clockface.getElementsByTagName('svg');
-            let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, cutils.updateIcon);
+            let icon = tzc.convSvgImg(elem[0], config.iconsize, cutils.updateIcon);
             let titleText = `${time.hour}:${time.min}`;
             cutils.updateTitle(titleText);
         }
 
-        let tzConfiga = await cutils.storageGet('tzConfiga');
+        //await cutils.storageReset(config.storage_name); // for DEVELOPMENT
+        let tzConfig = await cutils.storageGet(config.storage_name);
 
         // initialize Data
-        if(typeof tzConfiga == 'undefined') {
-            let tzConfig = [_DEFAULTSETTING_];
-            await cutils.storageSet('tzConfig', tzConfig);
+        if(typeof tzConfig == 'undefined') {
+            let tzConfig = [config.defaultsetting];
+            await cutils.storageSet(config.storage_name, tzConfig);
         }
         
         dispDateTime();
