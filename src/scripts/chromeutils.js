@@ -47,6 +47,21 @@ export default class ChromeUtils {
         });
     }
 
+    async storageReset(keys) {
+      if(typeof keys == 'string') {
+        keys = [keys];
+      }
+      return new Promise((resolve, reject) => {
+        try {
+          chrome.storage.sync.remove(keys, () => {
+            resolve(true);
+          });
+        } catch(e) {
+          reject(new Error(e));
+        }
+      });
+    }
+
     updateIcon(icon) {
         chrome.browserAction.setIcon({
             imageData : icon

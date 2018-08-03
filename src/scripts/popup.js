@@ -16,34 +16,36 @@
 
 import ChromeUtils from './chromeutils.js';
 import TimezoneClock from './timezoneclock.js';
+import config from './config.js';
 
 (async function(){
     const _ELEMPRE_ = 'clock_';
     const tzc = new TimezoneClock();
     let onTick = () => {};
     const cutils = new ChromeUtils();
-    let tzConfig = await cutils.storageGet('tzConfig');
+    let tzConfig = await cutils.storageGet(config.storage_name);
 
     const dispDateTime = async(iconUpdate) => {
         for(let i in tzConfig) {
             let zone = tzConfig[i].zone;
             let elemId = tzConfig[i].elemId;
+            //console.log(tzConfig[i].elemId, tzConfig[i].zone, tzConfig[i].name);
             let time = tzc.getCurrentTime(zone, 0);
             let tzInfo = tzc.getTimezoneInfoByValue(zone);
             let disp = `${time['year']} ${time['month']} ${time['date']} (${time['day']}) ${time['hour']}:${time['min']}:${time['sec']} ${tzInfo.name.split(' ').pop()} (${time['timeZone']})`;
             let clockface = document.querySelector('#'+elemId);
             clockface.innerHTML = '';
-            tzc.drawClock(time, elemId, _CLOCLFACE_WIDTH_/2, 'default');
+            tzc.drawClock(time, elemId, config.clockface_width/2, 'default');
             document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = tzConfig[i].name;
             document.querySelector('#' + _ELEMPRE_ + i + '_date').innerHTML = `${time['hour']}:${time['min']}`;
             document.querySelector('#' + _ELEMPRE_ + i + '_time').innerHTML = `${time['month']} ${time['date']} (${time['day']})`;
             
             if((time['min']%30 == 0 && tzConfig[i].persistent === true)
                || (iconUpdate === true && tzConfig[i].persistent === true) ) {
-                tzc.drawClock(time, 'icon', _CLOCLFACE_WIDTH_/2, 'icon');
+                tzc.drawClock(time, 'icon', config.clockface_width/2, 'icon');
                 clockface = document.querySelector('#icon');
                 let elem = clockface.getElementsByTagName('svg');
-                let icon = tzc.convSvgImg(elem[0], _ICONSIZE_, cutils.updateIcon);
+                let icon = tzc.convSvgImg(elem[0], config.iconsize, cutils.updateIcon);
                 let titleText = `${time.hour}:${time.min}`;
                 cutils.updateTitle(titleText);
             }
@@ -67,7 +69,7 @@ import TimezoneClock from './timezoneclock.js';
             let clockface = document.querySelector('#'+elemId);
             clockface.innerHTML = '';
             time.min = time.min10;
-            tzc.drawClock(time, elemId, _CLOCLFACE_WIDTH_/2, 'adjust');
+            tzc.drawClock(time, elemId, config.clockface_width/2, 'adjust');
             document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = tzConfig[i].name;
             document.querySelector('#' + _ELEMPRE_ + i + '_date').innerHTML = `${time['hour']}:${time['min']}`;
             document.querySelector('#' + _ELEMPRE_ + i + '_time').innerHTML = `${time['month']} ${time['date']} (${time['day']})`;
@@ -78,8 +80,8 @@ import TimezoneClock from './timezoneclock.js';
         // create Element
         let elem = document.createElement('div');
         tzConfig[i].elemId = elem.id = _ELEMPRE_ + i;
-        elem.style.setProperty('width', `${_CLOCLFACE_WIDTH_}px`);
-        elem.style.setProperty('height', `${_CLOCLFACE_WIDTH_ + 5}px` );
+        elem.style.setProperty('width', `${config.clockface_width}px`);
+        elem.style.setProperty('height', `${config.clockface_width + 5}px` );
         elem.classList.add('clockface');
         let div_tc = document.createElement('div');
         div_tc.id = _ELEMPRE_ + i + '_city';
@@ -104,7 +106,7 @@ import TimezoneClock from './timezoneclock.js';
     let settingB = document.querySelector('#setting-button');
     settingB.addEventListener('mousedown', updateSetting);
     
-    let sliderW = tzConfig.length < 3 ? 100 : 110 + (tzConfig.length - 2) * (_CLOCLFACE_WIDTH_ - 5);
+    let sliderW = tzConfig.length < 3 ? 100 : 110 + (tzConfig.length - 2) * (config.clockface_width - 5);
     if(tzConfig.length < 2) document.querySelector('.clock_container').style.setProperty('width', '160px');
     let tmC = document.querySelector('.slider-check');
     tmC.setAttribute('checked','checked');

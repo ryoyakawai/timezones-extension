@@ -71,10 +71,13 @@
        margin: 0px 5px;
        cursor: pointer;
      }
-     .message-area {
-       width:400px;
+     div.message-area-p {
+       width: 100%;
        display: flex;
-       justify-content: flex-end;
+       justify-content: center;
+     }
+     .message-area {
+       width: 340px;
        margin: 10px;
      }
      .message {
@@ -93,6 +96,7 @@
      }
      .message-warning {
        height: 10px;
+       font-size: 1.2em;
        color: #cc0000;
        font-weight: bold;
        animation-name: removemessage;
@@ -105,13 +109,15 @@
      }
      #main-container {
        display:flex;
-       justify-content: flex-end;
+       justify-content: center;
      }
     </style>
   </head>
   <body>
-    <div class="message-area">
-      <div id="message" class="message"></div>
+    <div class="message-area-p">
+      <div class="message-area">
+        <div id="message" class="message"></div>
+      </div>
     </div>
     <div id="main-container">
       <div id="icon" class="icon"></div>
@@ -122,7 +128,6 @@
       </div>
       <div id="main" class="main-p"></div>
     </div>
-    <script src="./scripts/config.js"></script>
     <script src="./scripts/raphael.min.js"></script>
     <script type="module" src="./scripts/options.js"></script>
   </body>
