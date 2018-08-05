@@ -123,59 +123,58 @@ export default class TimezoneClock {
                 }
             }
         };
-        let _SIZE_ = size;
         let tw = {};
-		    let hour_sign;
+		      let hour_sign;
         let clr = colorSet[clock_type][time.ampm];
-        let canvas = Raphael(elemId, 2*_SIZE_, 2*_SIZE_);
-		    let clock = canvas.circle(_SIZE_, _SIZE_, _SIZE_-5);
+        let canvas = Raphael(elemId, 2*size, 2*size);
+		      let clock = canvas.circle(size, size, size-5);
         let backClrIdx = (time.ampm == 'am') ? parseInt(Math.floor(time.hour / 6)) : parseInt(Math.floor(time.hour / 18));
         switch(clock_type) {
         case 'icon':
         case 'adjust':
             tw = {h: 1.2, m: 1.6 };
 		        if (typeof clr.backg == 'Object') {
-                clock.attr({ 'fill': clr.backg[backClrIdx], 'stroke': clr.backg[backClrIdx], 'stroke-width': '`${_SIZE_/20}`'});
+                clock.attr({ 'fill': clr.backg[backClrIdx], 'stroke': clr.backg[backClrIdx], 'stroke-width': '`${size/20}`'});
             } else {
-                clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
+                clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${size/20}`'});
             }
             break;
         case 'default':
         default:
             tw = {h: 1, m: 1};
-		        clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
+		        clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${size/20}`'});
 		        for(let i=0; i<12; i++){
-				        let start_x = _SIZE_ + Math.round(0.7 * _SIZE_ * Math.cos(30 * i * Math.PI/180));
-				        let start_y = _SIZE_ + Math.round(0.7 * _SIZE_ * Math.sin(30 * i * Math.PI/180));
-				        let end_x = _SIZE_ + Math.round(0.8 * _SIZE_ * Math.cos(30 * i * Math.PI/180));
-				        let end_y = _SIZE_ + Math.round(0.8 * _SIZE_ * Math.sin(30 * i * Math.PI/180));	
+				        let start_x = size + Math.round(0.7 * size * Math.cos(30 * i * Math.PI/180));
+				        let start_y = size + Math.round(0.7 * size * Math.sin(30 * i * Math.PI/180));
+				        let end_x = size + Math.round(0.8 * size * Math.cos(30 * i * Math.PI/180));
+				        let end_y = size + Math.round(0.8 * size * Math.sin(30 * i * Math.PI/180));
 				        hour_sign = canvas.path('M'+start_x+' '+start_y+'L'+end_x+' '+end_y);
-		            hour_sign.attr({ 'stroke': clr.outer, 'stroke-width': '`${_SIZE_/20}`'});
+		            hour_sign.attr({ 'stroke': clr.outer, 'stroke-width': '`${size/20}`'});
 		        }
             break;
         }
-        let hour_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${_SIZE_ / 2 / tw.h }`);
-        hour_hand.rotate(30*time.hour+(time.min/2.5), _SIZE_, _SIZE_);
-        hour_hand.attr({stroke: clr.hour, 'stroke-width': `${tw.h * 0.07 * _SIZE_}`});
+        let hour_hand = canvas.path(`M${size} ${size}L${size} ${size / 2 / tw.h }`);
+        hour_hand.rotate(30*time.hour+(time.min/2.5), size, size);
+        hour_hand.attr({stroke: clr.hour, 'stroke-width': `${tw.h * 0.07 * size}`});
 
-        let hour_pin = canvas.circle(_SIZE_, _SIZE_ / 2 / tw.h, tw.h * 0.07 * _SIZE_ / 4);
-        hour_pin.rotate(30*time.hour+(time.min/2.5), _SIZE_, _SIZE_);
-        hour_pin.attr({'fill':clr.hour, stroke: clr.hour, 'stroke-width': tw.h * 0.07 * _SIZE_ / 4}); 
+        let hour_pin = canvas.circle(size, size / 2 / tw.h, tw.h * 0.07 * size / 4);
+        hour_pin.rotate(30*time.hour+(time.min/2.5), size, size);
+        hour_pin.attr({'fill':clr.hour, stroke: clr.hour, 'stroke-width': tw.h * 0.07 * size / 4});
 
-        let minute_hand = canvas.path(`M${_SIZE_} ${_SIZE_}L${_SIZE_} ${0.30 * _SIZE_ / tw.m}`);
-        minute_hand.rotate(6*time.min, _SIZE_, _SIZE_);
-        minute_hand.attr({stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_});
+        let minute_hand = canvas.path(`M${size} ${size}L${size} ${0.30 * size / tw.m}`);
+        minute_hand.rotate(6*time.min, size, size);
+        minute_hand.attr({stroke: clr.minute, 'stroke-width': tw.m * 0.04 * size});
 
-        let minute_pin = canvas.circle(_SIZE_, 0.30 * _SIZE_ / tw.m, tw.m * 0.04 * _SIZE_ / 4);
-        minute_pin.rotate(6*time.min, _SIZE_, _SIZE_);
-        minute_pin.attr({'fill':clr.minute, stroke: clr.minute, 'stroke-width': tw.m * 0.04 * _SIZE_ / 4}); 
+        let minute_pin = canvas.circle(size, 0.30 * size / tw.m, tw.m * 0.04 * size / 4);
+        minute_pin.rotate(6*time.min, size, size);
+        minute_pin.attr({'fill':clr.minute, stroke: clr.minute, 'stroke-width': tw.m * 0.04 * size / 4});
 
-        let second_hand = canvas.path(`M${_SIZE_} ${_SIZE_+7}L${_SIZE_} ${_SIZE_/3.8}`);
-        second_hand.rotate(6*time.sec, _SIZE_, _SIZE_);
-        second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * _SIZE_}); 
+        let second_hand = canvas.path(`M${size} ${size+7}L${size} ${size/3.8}`);
+        second_hand.rotate(6*time.sec, size, size);
+        second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * size});
 
-        let pin = canvas.circle(_SIZE_, _SIZE_, tw.h * 0.07 * _SIZE_ / 3);
-        pin.attr({'fill':clr.pin, stroke: clr.pin, 'stroke-width': tw.h * 0.07 * _SIZE_ / 3}); 
+        let pin = canvas.circle(size, size, tw.h * 0.07 * size / 3);
+        pin.attr({'fill':clr.pin, stroke: clr.pin, 'stroke-width': tw.h * 0.07 * size / 3});
     }
 
     convSvgImg(targetElem, iconsize, callback) {
