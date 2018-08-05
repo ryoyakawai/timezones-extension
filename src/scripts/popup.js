@@ -19,13 +19,13 @@ import TimezoneClock from './timezoneclock.js';
 import config from './config.js';
 
 (async function(){
-    const _ELEMPRE_ = 'clock_';
-    const tzc = new TimezoneClock();
-    let onTick = () => {};
-    const cutils = new ChromeUtils();
-    let tzConfig = await cutils.storageGet(config.storage_name);
+  const _ELEMPRE_ = 'clock_';
+  const tzc = new TimezoneClock();
+  let onTick = () => {};
+  const cutils = new ChromeUtils();
+  let tzConfig = await cutils.storageGet(config.storage_name);
 
-    const dispDateTime = async(iconUpdate) => {
+  const dispDateTime = async(iconUpdate) => {
         for(let i in tzConfig) {
             let zone = tzConfig[i].zone;
             let elemId = tzConfig[i].elemId;

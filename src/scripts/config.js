@@ -1,4 +1,4 @@
-const _STORAGE_NAME_ = 'tzConfig';
+const _STORAGE_NAME_ = 'tzConfigAAAAAAAAAA';
 const _CLOCLFACE_WIDTH_ = 80;
 const _ICONSIZE_ = 19;
 const _CLOCKMAX_ = 8;
@@ -8,7 +8,7 @@ const _DEFAULTSETTING_ =  {
     elemId: null,
     persistent: false,
     zoneLabel:"London / +1:00",
-    dispicon: true
+    dispicon: false
 };
 
 // -------------------------

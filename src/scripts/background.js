@@ -32,11 +32,20 @@ chrome.runtime.onInstalled.addListener(function() {
     };
     
     async function updateIconClock() {
-        let onTick = () => {};
-        const cutils = new ChromeUtils();
+          let onTick = () => {};
+          const cutils = new ChromeUtils();
 
-        async function dispDateTime() {
+          async function dispDateTime() {
             let tzConfig = await cutils.storageGet(config.storage_name);
+            if(typeof tzConfig == 'undefined') {
+              await cutils.storageSet(config.storage_name, [config.defaultsetting]);
+              tzConfig = await cutils.storageGet(config.storage_name);
+            }
+
+            if(typeof tzConfig == 'undefined') {
+              console.log(config.defaultsetting, config.storage_name);
+              await cutils.storageSet(config.storage_name, tzConfig);
+            }
             let zone = tzConfig[0].zone;
             for(let idx in tzConfig) {
                 if(tzConfig[idx].dispicon === true) {
