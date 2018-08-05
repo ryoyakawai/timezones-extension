@@ -297,6 +297,10 @@ import config from './config.js';
     let div_clock = document.createElement('div');
     div_clock.classList.add('clockface');
     div_clock.id = `clock_face_${idx}`;
+    let loading = document.createElement('img');
+    loading.src='./images/loading01.gif';
+    loading.width = 20;
+    div_clock.appendChild(loading);
 
     let div_date = document.createElement('div');
     div_date.classList.add('clock_date');
