@@ -52,6 +52,7 @@ const tzList = [
     {name: "Nuuk",                   value: '-2:00',  abbr:'' },
     {name: "South Georgia",          value: '-2:00',  abbr:'' },
     {name: "Cape Verde",             value: '-1:00',  abbr:'' },
+    {name: "UTC",                    value: '+0:00',  abbr:'UTC' },
     {name: "Azores",                 value: '+0:00',  abbr:'' },
     {name: "Casablanca",             value: '+0:00',  abbr:'' },
     {name: "London",                 value: '+1:00',  abbr:'' },

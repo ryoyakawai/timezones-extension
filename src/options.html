@@ -28,7 +28,12 @@
      }
      .main-p {
        display: inline-block;
-       width: 400px;
+       width: 600px;
+     }
+     .timezone-container-p {
+       width: 500px;
+       display: flex;
+       align-items: center;
      }
      .timezone-container {
        display:inline-block;
@@ -37,6 +42,21 @@
        border-radius: 5px;
        box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
        transition: 1s;
+     }
+     .clock-preview {
+       width: 135px; height: 135px;
+       display:flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+       border: 1px solid #efefef;
+       border-radius: 3px;
+     }
+     .disp-as-icon {
+       border: 2px solid #00BCD4;
+     }
+     .clock_time {
+       font-weight: bold;
      }
      .dummy-inner-container {
        opacity: 0.5;
@@ -126,7 +146,8 @@
           <img src="./images/add.png" width="20" height="20"/>
         </div>
       </div>
-      <div id="main" class="main-p"></div>
+      <div id="main" class="main-p">
+      </div>
     </div>
     <script src="./scripts/raphael.min.js"></script>
     <script type="module" src="./scripts/options.js"></script>

@@ -71,7 +71,6 @@ import config from './config.js';
     await cutils.storageSet(config.storage_name, tzConfig);
   }
 
-
   async function clockOrderUp(event) {
     let tzConfig = await cutils.storageGet(config.storage_name);
     const idx = parseInt(event.target.id.split('_').pop());
@@ -186,9 +185,9 @@ import config from './config.js';
   const createEditBLock = async (idx, tzConfig) => {
     //let tzConfig = await cutils.storageGet(config.storage_name);
 
-    let div00 = document.createElement('div');
-    div00.id = `timezone_${idx}`;
-    div00.classList.add('timezone-container');
+    let timezone_container = document.createElement('div');
+    timezone_container.id = `timezone_${idx}`;
+    timezone_container.classList.add('timezone-container');
 
     let clockname = document.createElement('div');
     clockname.id = `clockname-p_${idx}`;
@@ -283,6 +282,38 @@ import config from './config.js';
     innerItems.id = 'innetItem';
     innerItems.classList.add('innerItem');
 
+    let timezone_container_p = document.createElement('div');
+    timezone_container_p.id = `clocktimezone_p_${idx}`;
+    timezone_container_p.classList.add('timezone-container-p');
+
+    let clock_preview = document.createElement('div');
+    clock_preview.id = `clock-preview_${idx}`;
+    clock_preview.classList.add('clock-preview');
+
+    let div_name = document.createElement('div');
+    div_name.classList.add('clock_name');
+    div_name.id = 'clock_name';
+
+    let div_clock = document.createElement('div');
+    div_clock.classList.add('clockface');
+    div_clock.id = `clock_face_${idx}`;
+
+    let div_date = document.createElement('div');
+    div_date.classList.add('clock_date');
+    div_date.id = 'clock_date';
+
+    let div_d_time = document.createElement('div');
+    div_d_time.classList.add('clock_time');
+    div_d_time.id = 'clock_time';
+
+    clock_preview.appendChild(div_name);
+    clock_preview.appendChild(div_clock);
+    clock_preview.appendChild(div_d_time);
+    clock_preview.appendChild(div_date);
+
+    timezone_container_p.appendChild(timezone_container);
+    timezone_container_p.appendChild(clock_preview);
+
     clockorder.appendChild(span03);
     clockorder.appendChild(order_down);
     clockorder.appendChild(order_up);
@@ -302,10 +333,10 @@ import config from './config.js';
     innerItems.appendChild(dispasicon);
     innerItems.appendChild(clockorder);
 
-    div00.appendChild(remove);
-    div00.appendChild(innerItems);
+    timezone_container.appendChild(remove);
+    timezone_container.appendChild(innerItems);
 
-    return div00;
+    return timezone_container_p;
   };
 
   async function createSettingItems(item) {
@@ -313,8 +344,36 @@ import config from './config.js';
     let main = document.querySelector('#main');
     for(let idx in tzConfig) {
       let elem = await createEditBLock(idx, tzConfig);
-      //console.log(main, elem);
       main.appendChild(elem);
+
+      let timerId = setInterval( async () => {
+        let tzConfig = await cutils.storageGet(config.storage_name);
+        onTick(tzConfig);
+      }, 1000);
+
+      async function onTick(tzConfig) {
+        let elem = document.querySelector(`#clock-preview_${idx}`);
+        let e_name = elem.querySelector('#clock_name');
+        let e_face = elem.querySelector(`#clock_face_${idx}`);
+        let e_date = elem.querySelector('#clock_date');
+        let e_time = elem.querySelector('#clock_time');
+
+        let zone = tzConfig[idx].zone;
+        let name = tzConfig[idx].name;
+        let time = tzc.getCurrentTime(zone, 0);
+        let disp_date = `${time['month']} ${time['date']} (${time['day']})`;
+        let disp_time = `${time['hour']}:${time['min']}`;
+
+        elem.classList.remove('disp-as-icon');
+        if(tzConfig[idx].dispicon === true) elem.classList.add('disp-as-icon');
+
+        let clock_preview_id = `clock_face_${idx}`;
+        e_name.innerHTML = name;
+        e_face.innerHTML = '';
+        tzc.drawClock(time, clock_preview_id, config.clockface_width/2, 'default');
+        e_date.innerHTML = disp_date;
+        e_time.innerHTML = disp_time;
+      }
     }
     
     if(typeof item == 'object' && parseInt(item.idx) < tzConfig.length) {
