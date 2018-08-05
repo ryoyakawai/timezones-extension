@@ -298,6 +298,7 @@ import config from './config.js';
     div_clock.classList.add('clockface');
     div_clock.id = `clock_face_${idx}`;
     let loading = document.createElement('img');
+    loading.id = 'loading-image';
     loading.src='./images/loading01.gif';
     loading.width = 20;
     div_clock.appendChild(loading);
@@ -315,8 +316,8 @@ import config from './config.js';
     clock_preview.appendChild(div_d_time);
     clock_preview.appendChild(div_date);
 
-    timezone_container_p.appendChild(timezone_container);
     timezone_container_p.appendChild(clock_preview);
+    timezone_container_p.appendChild(timezone_container);
 
     clockorder.appendChild(span03);
     clockorder.appendChild(order_down);
@@ -346,7 +347,9 @@ import config from './config.js';
   async function createSettingItems(item) {
     let tzConfig = await cutils.storageGet(config.storage_name);
     let main = document.querySelector('#main');
+    let check_dispasicon = false;
     for(let idx in tzConfig) {
+      if(tzConfig[idx].dispicon === true) check_dispasicon = true;;
       let elem = await createEditBLock(idx, tzConfig);
       main.appendChild(elem);
 
@@ -357,6 +360,7 @@ import config from './config.js';
 
       async function onTick(tzConfig) {
         let elem = document.querySelector(`#clock-preview_${idx}`);
+        if(elem == null) return;
         let e_name = elem.querySelector('#clock_name');
         let e_face = elem.querySelector(`#clock_face_${idx}`);
         let e_date = elem.querySelector('#clock_date');
@@ -372,12 +376,27 @@ import config from './config.js';
         if(tzConfig[idx].dispicon === true) elem.classList.add('disp-as-icon');
 
         let clock_preview_id = `clock_face_${idx}`;
-        e_name.innerHTML = name;
-        e_face.innerHTML = '';
-        tzc.drawClock(time, clock_preview_id, config.clockface_width/2, 'default');
-        e_date.innerHTML = disp_date;
-        e_time.innerHTML = disp_time;
+        if(elem.querySelector('#loading-image') !== null) {
+          elem.style.setProperty('opacity', '0');
+          setTimeout(() => {
+            e_face.innerHTML = '';
+            tzc.drawClock(time, clock_preview_id, config.clockface_width/2, 'default');
+          }, 100);
+        } else {
+          e_name.innerHTML = name;
+          e_face.innerHTML = '';
+          e_date.innerHTML = disp_date;
+          e_time.innerHTML = disp_time;
+          tzc.drawClock(time, clock_preview_id, config.clockface_width/2, 'default');
+          elem.style.setProperty('opacity', '1');
+        }
       }
+    }
+    // set default of dispasicon selection
+    if(check_dispasicon == false) {
+      document.querySelector('#display-as-icon_0').setAttribute('checked', 'checked');
+      tzConfig[0].dispicon = true;
+      await cutils.storageSet(config.storage_name, tzConfig);
     }
     
     if(typeof item == 'object' && parseInt(item.idx) < tzConfig.length) {
@@ -387,9 +406,11 @@ import config from './config.js';
         let nextElem = document.querySelector(`#timezone_${idx}`);
         let dummyBlock = document.createElement('div');
         dummyBlock.id = 'dummy-inner-container';
-        dummyBlock.classList.add('timezone-container', 'dummy-inner-container');
+        dummyBlock.classList.add('dummy-inner-container');
         dummyBlock.innerHTML = nextElem.innerHTML;
-        nextElem.parentNode.insertBefore(dummyBlock, nextElem);
+        //nextElem.parentNode.insertBefore(dummyBlock, nextElem);
+        nextElem.parentNode.parentNode.insertBefore(dummyBlock, nextElem.parentNode);
+        console.log(nextElem.parentNode.parentNode,nextElem.parentNode, nextElem);
         setTimeout(() => {
           dummyBlock.style.setProperty('opacity', '0');
         }, 10);
