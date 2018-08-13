@@ -1,0 +1,131 @@
+body {
+  margin : 10px;
+}
+.icon {
+  display: none;
+}
+.add {
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 20px;
+  border: 1px solid #dddddd;
+  padding:5px;
+  border-radius: 10px;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.add:hover {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.add:active {
+  box-shadow: 0 0px 0px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.main-p {
+  display: inline-block;
+  width: 600px;
+}
+.timezone-container-p {
+  width: 560px;
+  display: flex;
+  align-items: center;
+}
+.timezone-container {
+  display:inline-block;
+  margin: 10px 20px;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: 1s;
+}
+.clock-preview {
+  width: 135px; height: 135px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0);
+  border-radius: 3px;
+  transition: 0.2s;
+}
+.disp-as-icon {
+  border: 2px solid #00BCD4;
+}
+.clock_time {
+  font-weight: bold;
+}
+.dummy-inner-container {
+  width:700px;
+  opacity: 0.5;
+  transition: 0.6s;
+}
+.innerItem {
+  margin: -5px 25px 10px 25px
+}
+.remove-icon-p {
+  text-align: right;
+  margin: 3px;
+}
+.remove-image {
+  padding:0; margin:0;
+  border-radius: 50%;
+  transition: 0.2s;
+  cursor: pointer;
+}
+.remove-image:hover {
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+.remove-image:active {
+  box-shadow: 0 0px 0px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.setting-item {
+  margin: 0px 0px 10px 0px;
+}
+.update-label {
+  margin-left: 10px
+}
+.change-order {
+  margin: 0px 5px;
+  cursor: pointer;
+}
+div.message-area-p {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.message-area {
+  width: 340px;
+  margin: 10px;
+}
+.message {
+  display:inline-block;
+  height: 10px;
+  margin-left: 35px;
+  color: rgba(0, 0, 0, 0);
+}
+.message-info {
+  height: 10px;
+  color: #0000cc;
+  font-weight: bold;
+  animation-name: removemessage;
+  animation-duration: 3s;
+  animation-timing-function: ease-in-out;
+}
+.message-warning {
+  height: 10px;
+  font-size: 1.2em;
+  color: #cc0000;
+  font-weight: bold;
+  animation-name: removemessage;
+  animation-duration: 3s;
+  animation-timing-function: ease-in-out;
+}
+@keyframes removemessage {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+#main-container {
+  display:flex;
+  justify-content: center;
+}
