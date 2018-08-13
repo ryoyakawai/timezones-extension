@@ -383,7 +383,8 @@ import config from './config.js';
             tzc.drawClock(time, clock_preview_id, config.clockface_width/2, 'default');
           }, 100);
         } else {
-          e_name.innerHTML = name;
+          let city_name = ( name.length > 13 ) ? name.substr(0, 11)+'...' : name;
+          e_name.innerHTML = city_name;
           e_face.innerHTML = '';
           e_date.innerHTML = disp_date;
           e_time.innerHTML = disp_time;
