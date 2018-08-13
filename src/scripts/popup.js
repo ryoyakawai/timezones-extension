@@ -36,7 +36,8 @@ import config from './config.js';
             let clockface = document.querySelector('#'+elemId);
             clockface.innerHTML = '';
             tzc.drawClock(time, elemId, config.clockface_width/2, 'default');
-            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = tzConfig[i].name;
+            let city_name = ( tzConfig[i].name.length > 13 ) ? tzConfig[i].name.substr(0, 11) + '...' : tzConfig[i].name;
+            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = city_name;
             document.querySelector('#' + _ELEMPRE_ + i + '_date').innerHTML = `${time['hour']}:${time['min']}`;
             document.querySelector('#' + _ELEMPRE_ + i + '_time').innerHTML = `${time['month']} ${time['date']} (${time['day']})`;
             
@@ -70,7 +71,8 @@ import config from './config.js';
             clockface.innerHTML = '';
             time.min = time.min10;
             tzc.drawClock(time, elemId, config.clockface_width/2, 'adjust');
-            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = tzConfig[i].name;
+            let city_name = ( tzConfig[i].name.length > 13 ) ? tzConfig[i].name.substr(0, 12)+'...' : tzConfig[i].name;
+            document.querySelector('#' + _ELEMPRE_ + i + '_city').innerHTML = city_name;
             document.querySelector('#' + _ELEMPRE_ + i + '_date').innerHTML = `${time['hour']}:${time['min']}`;
             document.querySelector('#' + _ELEMPRE_ + i + '_time').innerHTML = `${time['month']} ${time['date']} (${time['day']})`;
         }
