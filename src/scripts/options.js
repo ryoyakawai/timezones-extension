@@ -23,6 +23,21 @@ import config from './config.js';
   const cutils = new ChromeUtils();
   const timezones = tzc.getTimezoneDef();
   let tzConfig = await cutils.storageGet(config.storage_name);
+  document.querySelector('#snack_bar').style.setProperty('height', '0px');
+
+  function snackbar(text, duration) {
+    let snb = document.querySelector('#snack_bar');
+    let snb_text = snb.querySelector('#snack_bar_text');
+    snb.classList.remove('opacity_0');
+    snb_text.innerHTML = text;
+    snb.style.setProperty('height', '37px');
+    if(typeof duration !== 'number') duration = 2000;
+    setTimeout(() => {
+      snb.style.setProperty('height', '0px');
+      snb.classList.add('opacity_0');
+    }, duration);
+    
+  }
 
   async function storeOnInput(event){
     tzConfig = await cutils.storageGet(config.storage_name);
@@ -121,15 +136,9 @@ import config from './config.js';
       checkDispIconIsChecked();
       document.querySelector('#main').innerHTML='';
       createSettingItems({idx: 0, type :'addNew'});
+      snackbar('New Clock is added.');
     } else {
-      let elem = document.querySelector('#message');
-      elem.innerHTML = 'No more clocks is able to add.';
-      elem.classList.add('message-warning');
-      setTimeout(() => {
-        elem.innerHTML = '...';
-        elem.classList.add('message');
-        elem.classList.remove('message-warning');
-      }, 2500);
+      snackbar('No more clocks are able to add.');
     }
   }
 
@@ -138,6 +147,7 @@ import config from './config.js';
     if(tzConfig.length > 1) {
       const idx = parseInt(event.target.id.split('_').pop());
       const label = event.target.id.split('_').shift();
+      let removed_clock_name = tzConfig[idx].name;
 
       tzConfig.splice(idx, 1);
 
@@ -145,15 +155,9 @@ import config from './config.js';
       checkDispIconIsChecked();
       document.querySelector('#main').innerHTML='';
       createSettingItems({idx: idx, type:'remove'});
+      snackbar(`Clock "${removed_clock_name}" is removed.`);
     } else {
-      let elem = document.querySelector('#message');
-      elem.innerHTML = 'At least one clock is required.';
-      elem.classList.add('message-warning');
-      setTimeout(() => {
-        elem.innerHTML = '...';
-        elem.classList.add('message');
-        elem.classList.remove('message-warning');
-      }, 2500);
+      snackbar('No more clocks are able to add.');
     }
   }
 
@@ -170,15 +174,7 @@ import config from './config.js';
       tzConfig[0].dispicon = true;
       await cutils.storageSet(config.storage_name, tzConfig);
       updateDispIcon(tzConfig[0].zone);
-
-      let elem = document.querySelector('#message');
-      elem.innerHTML = `Clock for Icon are set to "${tzConfig[0].name}".` ;
-      elem.classList.add('message-info');
-      setTimeout(() => {
-        elem.innerHTML = '...';
-        elem.classList.add('message');
-        elem.classList.remove('message-info');
-      }, 2500);
+      snackbar(`Clock for Icon are set to "${tzConfig[0].name}".`);
     }
   }
 
@@ -279,7 +275,7 @@ import config from './config.js';
     img00.addEventListener('mousedown', removeTimezoneClock, false);
 
     let innerItems = document.createElement('div');
-    innerItems.id = 'innetItem';
+    innerItems.id = 'innerItem';
     innerItems.classList.add('innerItem');
 
     let timezone_container_p = document.createElement('div');
@@ -405,13 +401,14 @@ import config from './config.js';
       switch(item.type) {
       case 'remove':
         let nextElem = document.querySelector(`#timezone_${idx}`);
+        let dummyBlock_p = document.createElement('div');
+        dummyBlock_p.classList.add('dummy-inner-container-p');
         let dummyBlock = document.createElement('div');
         dummyBlock.id = 'dummy-inner-container';
         dummyBlock.classList.add('dummy-inner-container');
         dummyBlock.innerHTML = nextElem.innerHTML;
-        //nextElem.parentNode.insertBefore(dummyBlock, nextElem);
-        nextElem.parentNode.parentNode.insertBefore(dummyBlock, nextElem.parentNode);
-        console.log(nextElem.parentNode.parentNode,nextElem.parentNode, nextElem);
+        dummyBlock_p.appendChild(dummyBlock);
+        nextElem.parentNode.parentNode.insertBefore(dummyBlock_p, nextElem.parentNode);
         setTimeout(() => {
           dummyBlock.style.setProperty('opacity', '0');
         }, 10);
