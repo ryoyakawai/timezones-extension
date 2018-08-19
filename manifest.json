@@ -1,6 +1,6 @@
 {
     "name": "Timezone Clocks",
-    "version": "1.0.16",
+    "version": "1.0.17",
     "description": "Display Multibple Timezone at once",
     "permissions": [
         "storage",
