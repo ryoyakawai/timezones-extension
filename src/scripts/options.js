@@ -25,6 +25,13 @@ import config from './config.js';
   let tzConfig = await cutils.storageGet(config.storage_name);
   document.querySelector('#snack_bar').style.setProperty('height', '0px');
 
+  main();
+
+  function main() {
+    document.querySelector('#add').addEventListener('mousedown', addNewTimezoneClock, false);
+    createSettingItems();
+  }
+    
   function snackbar(text, duration) {
     let snb = document.querySelector('#snack_bar');
     let snb_text = snb.querySelector('#snack_bar_text');
@@ -179,8 +186,6 @@ import config from './config.js';
   }
 
   const createEditBLock = async (idx, tzConfig) => {
-    //let tzConfig = await cutils.storageGet(config.storage_name);
-
     let timezone_container = document.createElement('div');
     timezone_container.id = `timezone_${idx}`;
     timezone_container.classList.add('timezone-container');
@@ -430,9 +435,5 @@ import config from './config.js';
       checkDispIconIsChecked();
     }
   }
-
-  document.querySelector('#add').addEventListener('mousedown', addNewTimezoneClock, false);
-
-  createSettingItems();
 
 }());
