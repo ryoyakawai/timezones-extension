@@ -185,7 +185,7 @@ import config from './config.js';
     }
   }
 
-  const createEditBLock = async (idx, tzConfig) => {
+  async function createEditBLock(idx, tzConfig) {
     let timezone_container = document.createElement('div');
     timezone_container.id = `timezone_${idx}`;
     timezone_container.classList.add('timezone-container');
@@ -343,7 +343,7 @@ import config from './config.js';
     timezone_container.appendChild(innerItems);
 
     return timezone_container_p;
-  };
+  }
 
   async function createSettingItems(item) {
     let tzConfig = await cutils.storageGet(config.storage_name);
@@ -416,7 +416,7 @@ import config from './config.js';
         nextElem.parentNode.parentNode.insertBefore(dummyBlock_p, nextElem.parentNode);
         setTimeout(() => {
           dummyBlock.style.setProperty('opacity', '0');
-        }, 10);
+        }, 20);
         setTimeout(() => {
           let re = document.querySelector('#dummy-inner-container');
           re.parentNode.removeChild(re);
