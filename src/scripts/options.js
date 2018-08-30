@@ -43,7 +43,11 @@ import config from './config.js';
       snb.style.setProperty('height', '0px');
       snb.classList.add('opacity_0');
     }, duration);
-    
+  }
+
+  function getCityNameById(id) {
+    let out = timezones[id];
+    return out;
   }
 
   async function storeOnInput(event){
@@ -56,8 +60,9 @@ import config from './config.js';
       break;
     case 'clocktimezone':
       let id = event.target.value;
-      tzConfig[idx].zone = timezones[id].value;
-      tzConfig[idx].zoneLabel = timezones[id].name;
+      let values = getCityNameById(id);
+      tzConfig[idx].zone = values.value;
+      tzConfig[idx].zoneLabel = values.name;
       break;
     }
 
@@ -219,6 +224,21 @@ import config from './config.js';
     let select00 = document.createElement('select');
     select00.id = `clocktimezone_${idx}`;
     select00.addEventListener('input', storeOnInput, false);
+    // to update clock name
+    select00.addEventListener('input', async(event) => {
+      let id = event.target.value;
+      let values = getCityNameById(id);
+      let city_name = ((values.name.split('/')).shift()).trim();
+      let city_name_elem_id = 'clockname-text_' + (event.target.id.split('_').pop());
+      document.querySelector(`#${city_name_elem_id}`).value = city_name;
+      let custom_event = {};
+      custom_event.target = {
+        id: city_name_elem_id,
+        value: city_name
+      };
+      await storeOnInput(event);
+      await storeOnInput(custom_event);
+    }, false);
 
     let option = new Option('(Select One)', false, false, false);
     select00.appendChild(option);
