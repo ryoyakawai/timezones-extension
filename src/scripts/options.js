@@ -31,7 +31,7 @@ import config from './config.js';
     document.querySelector('#add').addEventListener('mousedown', addNewTimezoneClock, false);
     createSettingItems();
   }
-    
+
   function snackbar(text, duration) {
     let snb = document.querySelector('#snack_bar');
     let snb_text = snb.querySelector('#snack_bar_text');
@@ -43,7 +43,6 @@ import config from './config.js';
       snb.style.setProperty('height', '0px');
       snb.classList.add('opacity_0');
     }, duration);
-    
   }
 
   async function storeOnInput(event){
@@ -60,7 +59,6 @@ import config from './config.js';
       tzConfig[idx].zoneLabel = timezones[id].name;
       break;
     }
-
     await cutils.storageSet(config.storage_name, tzConfig);
   };
 
@@ -72,7 +70,6 @@ import config from './config.js';
     let name = (tzConfig[idx].zoneLabel.split('/').shift()).trim();
     tzConfig[idx].name = name;
     document.querySelector(`#clockname-text_${idx}`).value = name;
-
     await cutils.storageSet(config.storage_name, tzConfig);
   }
 
@@ -87,7 +84,6 @@ import config from './config.js';
       if(i == idx) {
         tzConfig[i].dispicon = true;
       }
-
     }
     updateDispIcon(tzConfig[idx].zone);
     await cutils.storageSet(config.storage_name, tzConfig);
@@ -134,11 +130,8 @@ import config from './config.js';
   async function addNewTimezoneClock() {
     let tzConfig = await cutils.storageGet(config.storage_name);
     if(tzConfig.length < config.clockmax) {
-
       let default_data =  config.defaultsetting;
-
       tzConfig.unshift(default_data);
-
       await cutils.storageSet(config.storage_name, tzConfig);
       checkDispIconIsChecked();
       document.querySelector('#main').innerHTML='';
@@ -290,6 +283,32 @@ import config from './config.js';
     let clock_preview = document.createElement('div');
     clock_preview.id = `clock-preview_${idx}`;
     clock_preview.classList.add('clock-preview');
+    clock_preview.addEventListener('mousedown', async ( event ) => {
+      let target_id = event.target.id;
+      if(target_id.match(/^clock-preview/) === null) {
+        target_id = event.target.parentNode.id;
+        if(target_id.match(/^clock-preview/) === null) {
+          target_id = event.target.parentNode.parentNode.parentNode.id;
+        }
+      }
+      let id = parseInt(target_id.split('_').pop());
+      let target_radio_id = `display-as-icon_${id}`;
+      let elem = document.querySelector(`#${target_radio_id}`);
+      elem.checked = true;
+      for(let i in tzConfig) {
+        if(tzConfig[i].dispicon === true) {
+          document.querySelector(`#clock-preview_${i}`).classList.remove('disp-as-icon');
+        }
+        tzConfig[i].dispicon = false;
+      }
+      document.querySelector(`#clock-preview_${id}`).classList.add('disp-as-icon');
+      tzConfig[id].dispicon = true;
+      await cutils.storageSet(config.storage_name, tzConfig);
+      let custom_event = {
+        target : { id: target_id}
+      };
+      await updateDispIconSetting(custom_event);
+    }, false);
 
     let div_name = document.createElement('div');
     div_name.classList.add('clock_name');
