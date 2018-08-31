@@ -68,6 +68,9 @@ img.add_png {
   border-radius: 3px;
   transition: 0.2s;
 }
+.clock-preview:hover {
+  cursor: pointer;
+}
 .disp-as-icon {
   border: 2px solid #00BCD4;
 }
