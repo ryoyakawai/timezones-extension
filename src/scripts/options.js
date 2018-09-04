@@ -304,7 +304,10 @@ import config from './config.js';
     let clock_preview = document.createElement('div');
     clock_preview.id = `clock-preview_${idx}`;
     clock_preview.classList.add('clock-preview');
+
+    // to update of icon clock to display
     clock_preview.addEventListener('mousedown', async ( event ) => {
+      let tzConfig = await cutils.storageGet(config.storage_name);
       let target_id = event.target.id;
       if(target_id.match(/^clock-preview/) === null) {
         target_id = event.target.parentNode.id;
