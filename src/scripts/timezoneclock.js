@@ -126,30 +126,79 @@ export default class TimezoneClock {
         let tw = {};
 		      let hour_sign;
         let clr = colorSet[clock_type][time.ampm];
+        
+        let h = parseInt(time.hour);
+        let m = parseInt(time.min);
+        let totalMinutes = h * 60 + m;
+        
+        // Key points: [minutes, brightness(0-255)]
+        const points = [
+            [0, 0],       // 00:00 Black
+            [300, 0],     // 05:00 Black
+            [420, 255],   // 07:00 White
+            [720, 255],   // 12:00 White
+            [1020, 255],  // 17:00 White
+            [1200, 0],    // 20:00 Black
+            [1440, 0]     // 24:00 Black
+        ];
+
+        let v = 0;
+        for (let i = 0; i < points.length - 1; i++) {
+            let p1 = points[i];
+            let p2 = points[i+1];
+            if (totalMinutes >= p1[0] && totalMinutes <= p2[0]) {
+                let range = p2[0] - p1[0];
+                let offset = totalMinutes - p1[0];
+                let ratio = offset / range;
+                v = Math.round(p1[1] + (p2[1] - p1[1]) * ratio);
+                break;
+            }
+        }
+        
+        clr.backg = `rgba(${v}, ${v}, ${v}, 0.85)`;
+        
+        let icon = (totalMinutes >= 360 && totalMinutes < 1080) ? '☀️' : '🌜';
+
+        if (v < 128) {
+            clr.hour = clr.minute = 'rgba(240, 240, 240, 0.9)';
+            clr.outer = 'rgba(200, 200, 200, 0.8)';
+            clr.pin = 'rgba(211, 47, 47, 1)';
+        } else {
+            clr.hour = clr.minute = 'rgba(66, 66, 66, 1)';
+            clr.outer = 'rgba(189, 189, 189, 1)';
+            clr.pin = 'rgba(211, 47, 47, 1)';
+        }
+
         let canvas = Raphael(elemId, 2*size, 2*size);
 		      let clock = canvas.circle(size, size, size-5);
+        
+        if (clock_type !== 'icon') {
+            let icon_elem = canvas.text(size, size / 1.7, icon);
+            icon_elem.attr({ 'font-size': size / 3 });
+        }
+
         let backClrIdx = (time.ampm == 'am') ? parseInt(Math.floor(time.hour / 6)) : parseInt(Math.floor(time.hour / 18));
         switch(clock_type) {
         case 'icon':
         case 'adjust':
             tw = {h: 1.2, m: 1.6 };
 		        if (typeof clr.backg == 'Object') {
-                clock.attr({ 'fill': clr.backg[backClrIdx], 'stroke': clr.backg[backClrIdx], 'stroke-width': '`${size/20}`'});
+                clock.attr({ 'fill': clr.backg[backClrIdx], 'stroke': clr.backg[backClrIdx], 'stroke-width': size/20});
             } else {
-                clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${size/20}`'});
+                clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': size/20});
             }
             break;
         case 'default':
         default:
             tw = {h: 1, m: 1};
-		        clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': '`${size/20}`'});
+		        clock.attr({ 'fill': clr.backg, 'stroke': clr.outer, 'stroke-width': size/20});
 		        for(let i=0; i<12; i++){
 				        let start_x = size + Math.round(0.7 * size * Math.cos(30 * i * Math.PI/180));
 				        let start_y = size + Math.round(0.7 * size * Math.sin(30 * i * Math.PI/180));
 				        let end_x = size + Math.round(0.8 * size * Math.cos(30 * i * Math.PI/180));
 				        let end_y = size + Math.round(0.8 * size * Math.sin(30 * i * Math.PI/180));
 				        hour_sign = canvas.path('M'+start_x+' '+start_y+'L'+end_x+' '+end_y);
-		            hour_sign.attr({ 'stroke': clr.outer, 'stroke-width': '`${size/20}`'});
+		            hour_sign.attr({ 'stroke': clr.outer, 'stroke-width': size/20});
 		        }
             break;
         }
@@ -171,7 +220,7 @@ export default class TimezoneClock {
 
         let second_hand = canvas.path(`M${size} ${size+7}L${size} ${size/3.8}`);
         second_hand.rotate(6*time.sec, size, size);
-        second_hand.attr({stroke: clr.second, 'stroke-width': tw * 0.02 * size});
+        second_hand.attr({stroke: clr.second, 'stroke-width': 0.02 * size});
 
         let pin = canvas.circle(size, size, tw.h * 0.07 * size / 3);
         pin.attr({'fill':clr.pin, stroke: clr.pin, 'stroke-width': tw.h * 0.07 * size / 3});
