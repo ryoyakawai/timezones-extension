@@ -22,8 +22,9 @@ import config from './config.js';
   const _ELEMPRE_ = 'clock_';
   const tzc = new TimezoneClock();
   let onTick = () => {};
+  let timerId = null;
   const cutils = new ChromeUtils();
-  let tzConfig = await cutils.storageGet(config.storage_name);
+  let tzConfig = await cutils.storageGet(config.storage_name) || [];
 
   main();
 
@@ -160,7 +161,7 @@ import config from './config.js';
     dispDateTime(true);
     onTick = dispDateTime;
     
-    let timerId = setInterval(onTick, 1000);
+    timerId = setInterval(onTick, 1000);
   };
 
 }());

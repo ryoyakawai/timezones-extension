@@ -63,17 +63,17 @@ export default class ChromeUtils {
     }
 
     updateIcon(icon) {
-        chrome.browserAction.setIcon({
+        chrome.action.setIcon({
             imageData : icon
         });
     }
 
     updateBadgeText(text) {
-        chrome.browserAction.setBadgeText({text: text});
+        chrome.action.setBadgeText({text: text});
     }
 
     updateTitle(text) {
-        chrome.browserAction.setTitle({title: text});
+        chrome.action.setTitle({title: text});
     }
 
     opentab(path) {

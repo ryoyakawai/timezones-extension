@@ -1,27 +1,19 @@
 {
     "name": "Timezone Clocks",
     "version": "1.0.19",
-    "description": "Display Multibple Timezone at once",
+    "description": "Display Multiple Timezone at once",
     "permissions": [
         "storage",
         "tabs",
-        "idle"
+        "idle",
+        "offscreen",
+        "alarms"
     ],
     "background": {
-        "page": "src/background.html",
-        "persistent": true
+        "service_worker": "src/scripts/background.js",
+        "type": "module"
     },
-    "web_accessible_resources": [
-        "src/scripts/*"
-    ],
-    "content_scripts": [
-        {
-            "matches": [ "file:///*/background.html", "file:///*/options.html", "file:///*/popup.html" ],
-            "js": ["src/scripts/inject.js"],
-            "run_at": "document_start"
-        }
-    ],
-    "browser_action": {
+    "action": {
         "default_popup": "src/popup.html",
         "default_icon": {
             "16": "src/images/timezoneclock16.png",
@@ -37,6 +29,5 @@
         "128": "src/images/timezoneclock128.png"
     },
     "options_page": "src/options.html",
-    "manifest_version": 2
+    "manifest_version": 3
 }
-

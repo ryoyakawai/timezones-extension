@@ -22,7 +22,7 @@ import config from './config.js';
   const tzc = new TimezoneClock();
   const cutils = new ChromeUtils();
   const timezones = tzc.getTimezoneDef();
-  let tzConfig = await cutils.storageGet(config.storage_name);
+  let tzConfig = await cutils.storageGet(config.storage_name) || [];
   document.querySelector('#snack_bar').style.setProperty('height', '0px');
 
   main();
@@ -51,7 +51,7 @@ import config from './config.js';
   }
 
   async function storeOnInput(event){
-    tzConfig = await cutils.storageGet(config.storage_name);
+    tzConfig = await cutils.storageGet(config.storage_name) || [];
     const idx = parseInt(event.target.id.split('_').pop());
     const label = event.target.id.split('_').shift();
     switch(label) {
@@ -69,7 +69,7 @@ import config from './config.js';
   };
 
   async function insertTimezoneName(event) {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     const idx = parseInt(event.target.id.split('_').pop());
     const label = event.target.id.split('_').shift();
 
@@ -80,7 +80,7 @@ import config from './config.js';
   }
 
   async function updateDispIconSetting(event) {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     const idx = event.target.id.split('_').pop();
     const label = event.target.id.split('_').shift();
 
@@ -93,10 +93,11 @@ import config from './config.js';
     }
     updateDispIcon(tzConfig[idx].zone);
     await cutils.storageSet(config.storage_name, tzConfig);
+    chrome.runtime.sendMessage({ type: 'update-now' }).catch(() => {});
   }
 
   async function clockOrderUp(event) {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     const idx = parseInt(event.target.id.split('_').pop());
     const label = event.target.id.split('_').shift();
 
@@ -110,7 +111,7 @@ import config from './config.js';
   }
 
   async function clockOrderDown(event) {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     const idx = parseInt(event.target.id.split('_').pop());
     const label = event.target.id.split('_').shift();
 
@@ -134,7 +135,7 @@ import config from './config.js';
   }
 
   async function addNewTimezoneClock() {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     if(tzConfig.length < config.clockmax) {
       let default_data =  config.defaultsetting;
       tzConfig.unshift(default_data);
@@ -149,7 +150,7 @@ import config from './config.js';
   }
 
   async function removeTimezoneClock(event) {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     if(tzConfig.length > 1) {
       const idx = parseInt(event.target.id.split('_').pop());
       const label = event.target.id.split('_').shift();
@@ -168,7 +169,7 @@ import config from './config.js';
   }
 
   async function checkDispIconIsChecked() {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     let count = 0;
     for(let i=0; i<tzConfig.length; i++) {
       if(tzConfig[i].dispicon === true) {
@@ -307,7 +308,7 @@ import config from './config.js';
 
     // to update of icon clock to display
     clock_preview.addEventListener('mousedown', async ( event ) => {
-      let tzConfig = await cutils.storageGet(config.storage_name);
+      let tzConfig = await cutils.storageGet(config.storage_name) || [];
       let target_id = event.target.id;
       if(target_id.match(/^clock-preview/) === null) {
         target_id = event.target.parentNode.id;
@@ -389,7 +390,7 @@ import config from './config.js';
   }
 
   async function createSettingItems(item) {
-    let tzConfig = await cutils.storageGet(config.storage_name);
+    let tzConfig = await cutils.storageGet(config.storage_name) || [];
     let main = document.querySelector('#main');
     let check_dispasicon = false;
     for(let idx in tzConfig) {
@@ -398,7 +399,7 @@ import config from './config.js';
       main.appendChild(elem);
 
       let timerId = setInterval( async () => {
-        let tzConfig = await cutils.storageGet(config.storage_name);
+        let tzConfig = await cutils.storageGet(config.storage_name) || [];
         onTick(tzConfig);
       }, 1000);
 
